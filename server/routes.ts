@@ -178,33 +178,211 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Emergency routes
+  // Enhanced Emergency routes
   app.post('/api/emergency/lock-all', async (req, res) => {
     try {
       const event = await storage.createEmergencyEvent({
         userId: req.user.id,
         eventType: 'emergency_lock',
-        description: 'Emergency lock activated for all devices',
+        description: 'Emergency protocol activated - All devices locked, monitoring enabled',
         resolved: false
       });
 
-      // Log activity
+      // Log comprehensive activity
       await storage.createActivity({
         userId: req.user.id,
-        activityType: 'security_event',
-        description: 'EMERGENCY: All devices locked',
-        metadata: { eventId: event.id }
+        activityType: 'emergency',
+        description: 'Emergency protocol activated: Device lockdown, GPS tracking, live monitoring enabled',
+        metadata: { 
+          eventId: event.id,
+          activatedBy: 'Parent',
+          features: ['device_lock', 'gps_tracking', 'live_monitoring', 'emergency_contacts']
+        }
       });
 
+      // Broadcast enhanced emergency alert
       broadcast({ 
-        type: 'emergency_lock_activated', 
-        event,
-        timestamp: new Date().toISOString()
+        type: 'emergency_activated',
+        data: {
+          eventId: event.id,
+          activatedBy: 'Parent',
+          activatedAt: new Date().toISOString(),
+          reason: 'Manual activation',
+          features: {
+            deviceLock: true,
+            gpsTracking: true,
+            liveMonitoring: true,
+            emergencyContacts: true
+          }
+        }
       });
 
-      res.json({ success: true, event });
+      res.json({ 
+        success: true, 
+        message: 'Emergency protocol activated - All devices secured, monitoring enabled',
+        eventId: event.id,
+        activatedAt: new Date().toISOString()
+      });
     } catch (error) {
-      res.status(500).json({ error: 'Failed to activate emergency lock' });
+      res.status(500).json({ error: 'Failed to activate emergency protocol' });
+    }
+  });
+
+  // Parent override endpoint
+  app.post('/api/emergency/unlock-all', async (req, res) => {
+    try {
+      // Update any active emergency events
+      const activeEmergencies = await storage.getEmergencyEvents(req.user.id);
+      const activeEvent = activeEmergencies.find(event => !event.resolved);
+      
+      if (activeEvent) {
+        await storage.updateEmergencyEvent(activeEvent.id, { resolved: true });
+      }
+
+      // Log the override action
+      await storage.createActivity({
+        userId: req.user.id,
+        activityType: 'emergency',
+        description: 'Parent override: Emergency protocols disabled, devices unlocked',
+        metadata: { 
+          action: 'parent_override',
+          previousEventId: activeEvent?.id 
+        }
+      });
+
+      // Broadcast unlock to all devices
+      broadcast({
+        type: 'emergency_deactivated',
+        data: {
+          deactivatedBy: 'Parent',
+          deactivatedAt: new Date().toISOString(),
+          reason: 'Parent override'
+        }
+      });
+
+      res.json({ 
+        success: true, 
+        message: 'Emergency protocols disabled - All devices unlocked',
+        deactivatedAt: new Date().toISOString()
+      });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to disable emergency protocols' });
+    }
+  });
+
+  // Smart device biometric monitoring endpoint
+  app.post('/api/emergency/biometric-alert', async (req, res) => {
+    try {
+      const { deviceId, alertType, value, threshold, memberId } = req.body;
+
+      // Create emergency event for biometric alert
+      const event = await storage.createEmergencyEvent({
+        userId: req.user.id,
+        eventType: 'biometric_alert',
+        description: `${alertType} alert: ${value} (threshold: ${threshold}) detected`,
+        resolved: false
+      });
+
+      // Log the biometric alert
+      await storage.createActivity({
+        userId: req.user.id,
+        activityType: 'biometric_alert',
+        description: `Automatic ${alertType} alert detected`,
+        metadata: {
+          deviceId,
+          alertType,
+          value,
+          threshold,
+          memberId,
+          eventId: event.id
+        }
+      });
+
+      // Broadcast biometric alert
+      broadcast({
+        type: 'biometric_alert',
+        data: {
+          eventId: event.id,
+          deviceId,
+          alertType,
+          value,
+          threshold,
+          memberId,
+          timestamp: new Date().toISOString()
+        }
+      });
+
+      res.json({ 
+        success: true, 
+        message: `${alertType} alert processed`,
+        eventId: event.id
+      });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to process biometric alert' });
+    }
+  });
+
+  // Voice distress detection endpoint
+  app.post('/api/emergency/voice-alert', async (req, res) => {
+    try {
+      const { deviceId, transcript, confidence, keywords, memberId } = req.body;
+
+      // Create emergency event for voice alert
+      const event = await storage.createEmergencyEvent({
+        userId: req.user.id,
+        eventType: 'voice_distress',
+        description: `Voice distress detected: "${transcript}" (confidence: ${confidence}%)`,
+        resolved: false
+      });
+
+      // Log the voice alert
+      await storage.createActivity({
+        userId: req.user.id,
+        activityType: 'voice_alert',
+        description: `AI detected distress keywords in voice pattern`,
+        metadata: {
+          deviceId,
+          transcript,
+          confidence,
+          keywords,
+          memberId,
+          eventId: event.id
+        }
+      });
+
+      // Broadcast voice alert
+      broadcast({
+        type: 'voice_distress_alert',
+        data: {
+          eventId: event.id,
+          deviceId,
+          transcript,
+          confidence,
+          keywords,
+          memberId,
+          timestamp: new Date().toISOString()
+        }
+      });
+
+      res.json({ 
+        success: true, 
+        message: 'Voice distress alert processed',
+        eventId: event.id
+      });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to process voice alert' });
+    }
+  });
+
+  // Get active emergency events
+  app.get('/api/emergency/active', async (req, res) => {
+    try {
+      const emergencies = await storage.getEmergencyEvents(req.user.id);
+      const activeEmergencies = emergencies.filter(event => !event.resolved);
+      
+      res.json(activeEmergencies);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to get active emergencies' });
     }
   });
 
