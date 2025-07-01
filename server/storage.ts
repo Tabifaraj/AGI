@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { 
   users, familyMembers, devices, securitySettings, activities, emergencyEvents,
   type User, type InsertUser,
@@ -8,6 +7,8 @@ import {
   type Activity, type InsertActivity,
   type EmergencyEvent, type InsertEmergencyEvent
 } from "@shared/schema";
+import { db } from "./db";
+import { eq, desc } from "drizzle-orm";
 
 export interface IStorage {
   // User methods
@@ -45,274 +46,155 @@ export interface IStorage {
   updateEmergencyEvent(id: number, updates: Partial<EmergencyEvent>): Promise<EmergencyEvent | undefined>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<number, User> = new Map();
-  private familyMembers: Map<number, FamilyMember> = new Map();
-  private devices: Map<number, Device> = new Map();
-  private securitySettings: Map<number, SecuritySettings> = new Map();
-  private activities: Map<number, Activity> = new Map();
-  private emergencyEvents: Map<number, EmergencyEvent> = new Map();
-  private currentId: number = 1;
-
-  constructor() {
-    this.initializeDefaultData();
-  }
-
-  private initializeDefaultData() {
-    // Create default parent user
-    const parentUser: User = {
-      id: 1,
-      username: "parent",
-      password: "password",
-      email: "parent@family.com",
-      fullName: "John Doe",
-      profileImage: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150",
-      role: "parent",
-      createdAt: new Date(),
-    };
-    this.users.set(1, parentUser);
-
-    // Create family members
-    const daughter: FamilyMember = {
-      id: 1,
-      userId: 1,
-      parentId: 1,
-      name: "Emma",
-      role: "child",
-      profileImage: "https://images.unsplash.com/photo-1503919005314-30d93d07d823?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&h=80",
-      age: 12,
-      permissions: {
-        apps: ["Games", "Educational"],
-        timeRestrictions: {
-          "Social Media": { start: "20:00", end: "08:00" },
-          "YouTube": { start: "21:00", end: "08:00" }
-        },
-        networkAccess: true,
-        contacts: ["Mom", "Dad", "School"]
-      },
-      isActive: true,
-      createdAt: new Date()
-    };
-
-    const spouse: FamilyMember = {
-      id: 2,
-      userId: 1,
-      parentId: 1,
-      name: "Sarah",
-      role: "spouse",
-      profileImage: "https://images.unsplash.com/photo-1494790108755-2616b332c269?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&h=80",
-      age: 35,
-      permissions: {
-        apps: [],
-        timeRestrictions: {},
-        networkAccess: true,
-        contacts: []
-      },
-      isActive: true,
-      createdAt: new Date()
-    };
-
-    this.familyMembers.set(1, daughter);
-    this.familyMembers.set(2, spouse);
-
-    // Create default security settings
-    const defaultSettings: SecuritySettings = {
-      id: 1,
-      userId: 1,
-      faceIdEnabled: true,
-      touchIdEnabled: true,
-      voiceIdEnabled: true,
-      networkControlEnabled: true,
-      emergencyContacts: ["+1234567890", "+0987654321"],
-      aiAssistantEnabled: true,
-      createdAt: new Date()
-    };
-    this.securitySettings.set(1, defaultSettings);
-
-    this.currentId = 3;
-  }
-
-  // User methods
+export class DatabaseStorage implements IStorage {
   async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(user => user.username === username);
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.currentId++;
-    const user: User = { 
-      ...insertUser, 
-      id, 
-      profileImage: insertUser.profileImage || null,
-      role: insertUser.role || "parent",
-      createdAt: new Date() 
-    };
-    this.users.set(id, user);
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
     return user;
   }
 
   async updateUser(id: number, updates: Partial<User>): Promise<User | undefined> {
-    const user = this.users.get(id);
-    if (!user) return undefined;
-    
-    const updatedUser = { ...user, ...updates };
-    this.users.set(id, updatedUser);
-    return updatedUser;
+    const [user] = await db
+      .update(users)
+      .set(updates)
+      .where(eq(users.id, id))
+      .returning();
+    return user || undefined;
   }
 
-  // Family member methods
   async getFamilyMembers(parentId: number): Promise<FamilyMember[]> {
-    return Array.from(this.familyMembers.values()).filter(
-      member => member.parentId === parentId
-    );
+    return await db.select().from(familyMembers).where(eq(familyMembers.parentId, parentId));
   }
 
   async getFamilyMember(id: number): Promise<FamilyMember | undefined> {
-    return this.familyMembers.get(id);
+    const [member] = await db.select().from(familyMembers).where(eq(familyMembers.id, id));
+    return member || undefined;
   }
 
   async createFamilyMember(insertMember: InsertFamilyMember): Promise<FamilyMember> {
-    const id = this.currentId++;
-    const member: FamilyMember = { 
-      ...insertMember, 
-      id, 
-      profileImage: insertMember.profileImage || null,
-      age: insertMember.age || null,
-      permissions: insertMember.permissions || null,
-      isActive: insertMember.isActive ?? true,
-      createdAt: new Date() 
-    };
-    this.familyMembers.set(id, member);
+    const [member] = await db
+      .insert(familyMembers)
+      .values(insertMember)
+      .returning();
     return member;
   }
 
   async updateFamilyMember(id: number, updates: Partial<FamilyMember>): Promise<FamilyMember | undefined> {
-    const member = this.familyMembers.get(id);
-    if (!member) return undefined;
-    
-    const updatedMember = { ...member, ...updates };
-    this.familyMembers.set(id, updatedMember);
-    return updatedMember;
+    const [member] = await db
+      .update(familyMembers)
+      .set(updates)
+      .where(eq(familyMembers.id, id))
+      .returning();
+    return member || undefined;
   }
 
   async deleteFamilyMember(id: number): Promise<boolean> {
-    return this.familyMembers.delete(id);
+    const result = await db.delete(familyMembers).where(eq(familyMembers.id, id));
+    return (result as any).rowCount > 0;
   }
 
-  // Device methods
   async getDevices(userId: number): Promise<Device[]> {
-    return Array.from(this.devices.values()).filter(
-      device => device.userId === userId
-    );
+    return await db.select().from(devices).where(eq(devices.userId, userId));
   }
 
   async getDevice(id: number): Promise<Device | undefined> {
-    return this.devices.get(id);
+    const [device] = await db.select().from(devices).where(eq(devices.id, id));
+    return device || undefined;
   }
 
   async createDevice(insertDevice: InsertDevice): Promise<Device> {
-    const id = this.currentId++;
-    const device: Device = { 
-      ...insertDevice, 
-      id, 
-      createdAt: new Date() 
-    };
-    this.devices.set(id, device);
+    const [device] = await db
+      .insert(devices)
+      .values(insertDevice)
+      .returning();
     return device;
   }
 
   async updateDevice(id: number, updates: Partial<Device>): Promise<Device | undefined> {
-    const device = this.devices.get(id);
-    if (!device) return undefined;
-    
-    const updatedDevice = { ...device, ...updates };
-    this.devices.set(id, updatedDevice);
-    return updatedDevice;
+    const [device] = await db
+      .update(devices)
+      .set(updates)
+      .where(eq(devices.id, id))
+      .returning();
+    return device || undefined;
   }
 
   async deleteDevice(id: number): Promise<boolean> {
-    return this.devices.delete(id);
+    const result = await db.delete(devices).where(eq(devices.id, id));
+    return (result as any).rowCount > 0;
   }
 
-  // Security settings methods
   async getSecuritySettings(userId: number): Promise<SecuritySettings | undefined> {
-    return Array.from(this.securitySettings.values()).find(
-      settings => settings.userId === userId
-    );
+    const [settings] = await db.select().from(securitySettings).where(eq(securitySettings.userId, userId));
+    return settings || undefined;
   }
 
   async createSecuritySettings(insertSettings: InsertSecuritySettings): Promise<SecuritySettings> {
-    const id = this.currentId++;
-    const settings: SecuritySettings = { 
-      ...insertSettings, 
-      id, 
-      createdAt: new Date() 
-    };
-    this.securitySettings.set(id, settings);
+    const [settings] = await db
+      .insert(securitySettings)
+      .values(insertSettings)
+      .returning();
     return settings;
   }
 
   async updateSecuritySettings(userId: number, updates: Partial<SecuritySettings>): Promise<SecuritySettings | undefined> {
-    const settings = Array.from(this.securitySettings.values()).find(
-      s => s.userId === userId
-    );
-    if (!settings) return undefined;
-    
-    const updatedSettings = { ...settings, ...updates };
-    this.securitySettings.set(settings.id, updatedSettings);
-    return updatedSettings;
+    const [settings] = await db
+      .update(securitySettings)
+      .set(updates)
+      .where(eq(securitySettings.userId, userId))
+      .returning();
+    return settings || undefined;
   }
 
-  // Activity methods
   async getActivities(userId: number, limit: number = 50): Promise<Activity[]> {
-    const userActivities = Array.from(this.activities.values())
-      .filter(activity => activity.userId === userId)
-      .sort((a, b) => b.timestamp!.getTime() - a.timestamp!.getTime())
-      .slice(0, limit);
-    
-    return userActivities;
+    return await db.select().from(activities)
+      .where(eq(activities.userId, userId))
+      .orderBy(desc(activities.timestamp))
+      .limit(limit);
   }
 
   async createActivity(insertActivity: InsertActivity): Promise<Activity> {
-    const id = this.currentId++;
-    const activity: Activity = { 
-      ...insertActivity, 
-      id, 
-      timestamp: new Date() 
-    };
-    this.activities.set(id, activity);
+    const [activity] = await db
+      .insert(activities)
+      .values(insertActivity)
+      .returning();
     return activity;
   }
 
-  // Emergency methods
   async getEmergencyEvents(userId: number): Promise<EmergencyEvent[]> {
-    return Array.from(this.emergencyEvents.values())
-      .filter(event => event.userId === userId)
-      .sort((a, b) => b.createdAt!.getTime() - a.createdAt!.getTime());
+    return await db.select().from(emergencyEvents)
+      .where(eq(emergencyEvents.userId, userId))
+      .orderBy(desc(emergencyEvents.createdAt));
   }
 
   async createEmergencyEvent(insertEvent: InsertEmergencyEvent): Promise<EmergencyEvent> {
-    const id = this.currentId++;
-    const event: EmergencyEvent = { 
-      ...insertEvent, 
-      id, 
-      createdAt: new Date() 
-    };
-    this.emergencyEvents.set(id, event);
+    const [event] = await db
+      .insert(emergencyEvents)
+      .values(insertEvent)
+      .returning();
     return event;
   }
 
   async updateEmergencyEvent(id: number, updates: Partial<EmergencyEvent>): Promise<EmergencyEvent | undefined> {
-    const event = this.emergencyEvents.get(id);
-    if (!event) return undefined;
-    
-    const updatedEvent = { ...event, ...updates };
-    this.emergencyEvents.set(id, updatedEvent);
-    return updatedEvent;
+    const [event] = await db
+      .update(emergencyEvents)
+      .set(updates)
+      .where(eq(emergencyEvents.id, id))
+      .returning();
+    return event || undefined;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();

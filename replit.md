@@ -106,6 +106,11 @@ This is a full-stack family safety and parental control application built with R
 
 ```
 Changelog:
+- July 1, 2025. Added PostgreSQL database integration
+  - Migrated from in-memory storage to persistent database
+  - Created database schema with Drizzle ORM
+  - Seeded database with default family data
+  - Maintained all existing functionality with database persistence
 - June 30, 2025. Initial setup
 ```
 
