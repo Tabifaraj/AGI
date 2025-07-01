@@ -8,6 +8,9 @@ import Dashboard from "@/pages/dashboard";
 import Family from "@/pages/family";
 import Activity from "@/pages/activity";
 import Settings from "@/pages/settings";
+import MapTracking from "@/pages/map-tracking";
+import SchoolMode from "@/pages/school-mode";
+import BullyingDetection from "@/pages/bullying-detection";
 import NotFound from "@/pages/not-found";
 import { useEffect } from "react";
 
@@ -18,6 +21,9 @@ function Router() {
       <Route path="/family" component={Family} />
       <Route path="/activity" component={Activity} />
       <Route path="/settings" component={Settings} />
+      <Route path="/map-tracking" component={MapTracking} />
+      <Route path="/school-mode" component={SchoolMode} />
+      <Route path="/bullying-detection" component={BullyingDetection} />
       <Route component={NotFound} />
     </Switch>
   );

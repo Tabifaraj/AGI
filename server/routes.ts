@@ -386,6 +386,208 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // GPS Zone Management routes
+  app.get('/api/zones', async (req, res) => {
+    try {
+      // Mock zones for demo - in real app, store in database
+      const zones = [
+        { id: 1, name: "Home Safe Zone", type: "safe", latitude: 40.7589, longitude: -73.9851, radius: 200, isActive: true },
+        { id: 2, name: "School Safe Zone", type: "safe", latitude: 40.7614, longitude: -73.9776, radius: 150, isActive: true },
+        { id: 3, name: "Construction Site", type: "danger", latitude: 40.7648, longitude: -73.9808, radius: 300, isActive: true }
+      ];
+      res.json(zones);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch zones' });
+    }
+  });
+
+  app.post('/api/zones', async (req, res) => {
+    try {
+      const { name, type, latitude, longitude, radius } = req.body;
+      
+      // Log zone creation activity
+      await storage.createActivity({
+        userId: req.user.id,
+        activityType: 'zone_management',
+        description: `Created ${type} zone: ${name}`,
+        metadata: { name, type, latitude, longitude, radius }
+      });
+
+      // Mock response - in real app, save to database
+      const newZone = {
+        id: Date.now(),
+        name,
+        type,
+        latitude: parseFloat(latitude),
+        longitude: parseFloat(longitude),
+        radius: parseInt(radius),
+        isActive: true
+      };
+
+      broadcast({
+        type: 'zone_created',
+        data: newZone
+      });
+
+      res.json(newZone);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to create zone' });
+    }
+  });
+
+  app.delete('/api/zones/:id', async (req, res) => {
+    try {
+      const zoneId = parseInt(req.params.id);
+      
+      await storage.createActivity({
+        userId: req.user.id,
+        activityType: 'zone_management',
+        description: `Deleted zone ID: ${zoneId}`,
+        metadata: { zoneId }
+      });
+
+      broadcast({
+        type: 'zone_deleted',
+        data: { zoneId }
+      });
+
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to delete zone' });
+    }
+  });
+
+  // School Mode routes
+  app.get('/api/school-mode', async (req, res) => {
+    try {
+      // Mock school mode settings
+      const settings = {
+        schedules: [
+          { id: 1, name: "School Hours", days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], startTime: "08:00", endTime: "15:00", isActive: true }
+        ],
+        appRules: [
+          { id: 1, appName: "TikTok", category: "Social", schoolHours: 'blocked', afterSchool: 'time-limited', timeLimit: 60 }
+        ]
+      };
+      res.json(settings);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch school mode settings' });
+    }
+  });
+
+  app.post('/api/school-mode/schedule', async (req, res) => {
+    try {
+      const { name, days, startTime, endTime } = req.body;
+      
+      await storage.createActivity({
+        userId: req.user.id,
+        activityType: 'school_mode',
+        description: `Created school schedule: ${name}`,
+        metadata: { name, days, startTime, endTime }
+      });
+
+      broadcast({
+        type: 'school_schedule_updated',
+        data: { name, days, startTime, endTime }
+      });
+
+      res.json({ success: true, message: 'Schedule created successfully' });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to create schedule' });
+    }
+  });
+
+  // Device Control routes
+  app.post('/api/devices/:id/control', async (req, res) => {
+    try {
+      const deviceId = parseInt(req.params.id);
+      const { action } = req.body;
+      
+      await storage.createActivity({
+        userId: req.user.id,
+        activityType: 'device_control',
+        description: `Device ${action} command sent to device ${deviceId}`,
+        metadata: { deviceId, action }
+      });
+
+      broadcast({
+        type: 'device_control',
+        data: { deviceId, action, timestamp: new Date().toISOString() }
+      });
+
+      res.json({ success: true, message: `${action} command sent successfully` });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to control device' });
+    }
+  });
+
+  app.put('/api/devices/:id/permissions', async (req, res) => {
+    try {
+      const deviceId = parseInt(req.params.id);
+      const permissions = req.body;
+      
+      await storage.createActivity({
+        userId: req.user.id,
+        activityType: 'device_permissions',
+        description: `Updated permissions for device ${deviceId}`,
+        metadata: { deviceId, permissions }
+      });
+
+      broadcast({
+        type: 'device_permissions_updated',
+        data: { deviceId, permissions }
+      });
+
+      res.json({ success: true, message: 'Permissions updated successfully' });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to update permissions' });
+    }
+  });
+
+  // Bullying Detection routes
+  app.get('/api/bullying-detection/alerts', async (req, res) => {
+    try {
+      // Mock alerts - in real app, fetch from database
+      const alerts = [
+        {
+          id: 1,
+          memberId: 1,
+          memberName: "Emma",
+          alertType: 'high_stress',
+          severity: 'high',
+          description: 'Elevated heart rate and stress indicators detected during school hours',
+          timestamp: new Date(Date.now() - 5 * 60000),
+          resolved: false
+        }
+      ];
+      res.json(alerts);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch bullying detection alerts' });
+    }
+  });
+
+  app.put('/api/bullying-detection/alerts/:id/resolve', async (req, res) => {
+    try {
+      const alertId = parseInt(req.params.id);
+      
+      await storage.createActivity({
+        userId: req.user.id,
+        activityType: 'bullying_detection',
+        description: `Resolved bullying detection alert ${alertId}`,
+        metadata: { alertId }
+      });
+
+      broadcast({
+        type: 'alert_resolved',
+        data: { alertId }
+      });
+
+      res.json({ success: true, message: 'Alert resolved successfully' });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to resolve alert' });
+    }
+  });
+
   app.get('/api/emergency-events', async (req, res) => {
     try {
       const events = await storage.getEmergencyEvents(req.user.id);

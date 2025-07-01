@@ -1,11 +1,14 @@
 import { Button } from "@/components/ui/button";
-import { Home, Users, BarChart3, Settings } from "lucide-react";
+import { Home, Users, BarChart3, Settings, MapPin, School, Shield } from "lucide-react";
 import { useLocation } from "wouter";
 import { Link } from "wouter";
 
 const navItems = [
   { path: "/", icon: Home, label: "Home" },
   { path: "/family", icon: Users, label: "Family" },
+  { path: "/map-tracking", icon: MapPin, label: "GPS" },
+  { path: "/school-mode", icon: School, label: "School" },
+  { path: "/bullying-detection", icon: Shield, label: "Safety" },
   { path: "/activity", icon: BarChart3, label: "Activity" },
   { path: "/settings", icon: Settings, label: "Settings" },
 ];
