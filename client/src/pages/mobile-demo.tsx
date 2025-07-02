@@ -279,136 +279,141 @@ export default function MobileDemo() {
           )}
         </div>
 
-        {/* Native Permissions */}
+        {/* Emergency Control Center */}
         <div className="p-3 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-base font-semibold mb-2">Native Permissions</h2>
-          <div className="space-y-2">
-            {Object.entries(permissions).map(([key, value]) => (
-              <div key={key} className="flex items-center justify-between">
-                <div className="flex items-center space-x-1.5 flex-1 min-w-0">
-                  {key === 'location' && <MapPin className="h-3.5 w-3.5 text-blue-600 flex-shrink-0" />}
-                  {key === 'camera' && <Camera className="h-3.5 w-3.5 text-green-600 flex-shrink-0" />}
-                  {key === 'microphone' && <Mic className="h-3.5 w-3.5 text-red-600 flex-shrink-0" />}
-                  {key === 'contacts' && <Contact className="h-3.5 w-3.5 text-purple-600 flex-shrink-0" />}
-                  {key === 'notifications' && <Bell className="h-3.5 w-3.5 text-yellow-600 flex-shrink-0" />}
-                  {key === 'biometric' && <AlertTriangle className="h-3.5 w-3.5 text-indigo-600 flex-shrink-0" />}
-                  <span className="text-xs font-medium capitalize truncate">{key}</span>
+          <h2 className="text-base font-semibold mb-3">Emergency Control Center</h2>
+          
+          {/* Smart Devices Section */}
+          <div className="mb-4">
+            <h3 className="text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Smart Devices</h3>
+            <div className="space-y-2">
+              {Object.entries(permissions).map(([key, value]) => (
+                <div key={key} className="flex items-center justify-between">
+                  <div className="flex items-center space-x-1.5 flex-1 min-w-0">
+                    {key === 'location' && <MapPin className="h-3.5 w-3.5 text-blue-600 flex-shrink-0" />}
+                    {key === 'camera' && <Camera className="h-3.5 w-3.5 text-green-600 flex-shrink-0" />}
+                    {key === 'microphone' && <Mic className="h-3.5 w-3.5 text-red-600 flex-shrink-0" />}
+                    {key === 'contacts' && <Contact className="h-3.5 w-3.5 text-purple-600 flex-shrink-0" />}
+                    {key === 'notifications' && <Bell className="h-3.5 w-3.5 text-yellow-600 flex-shrink-0" />}
+                    {key === 'biometric' && <AlertTriangle className="h-3.5 w-3.5 text-indigo-600 flex-shrink-0" />}
+                    <span className="text-xs font-medium capitalize truncate">{key}</span>
+                  </div>
+                  {value ? (
+                    <Badge variant="default" className="text-xs flex-shrink-0 ml-2">ON</Badge>
+                  ) : (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => requestPermission(key as keyof DevicePermissions)}
+                      className="text-xs px-2 py-1 h-auto flex-shrink-0 ml-2"
+                    >
+                      Enable
+                    </Button>
+                  )}
                 </div>
-                {value ? (
-                  <Badge variant="default" className="text-xs flex-shrink-0 ml-2">OK</Badge>
-                ) : (
+              ))}
+            </div>
+          </div>
+
+          {/* AI Detection Section */}
+          <div className="mb-4">
+            <h3 className="text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">AI Detection</h3>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between p-2 bg-red-50 dark:bg-red-900/20 rounded-lg">
+                <div className="flex items-center space-x-2 flex-1 min-w-0">
+                  <Heart className="h-3 w-3 text-red-500 flex-shrink-0" />
+                  <span className="text-xs truncate">Heart Rate</span>
+                </div>
+                <span className="text-xs font-medium ml-2 flex-shrink-0">{monitoringData.heartRate} BPM</span>
+              </div>
+
+              <div className="flex items-center justify-between p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+                <div className="flex items-center space-x-2 flex-1 min-w-0">
+                  <AlertTriangle className="h-3 w-3 text-yellow-500 flex-shrink-0" />
+                  <span className="text-xs truncate">Stress Level</span>
+                </div>
+                <span className={`text-xs font-medium ml-2 flex-shrink-0 ${getStressColor(monitoringData.stressLevel)}`}>
+                  {monitoringData.stressLevel}/10
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between p-2 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                <div className="flex items-center space-x-2 flex-1 min-w-0">
+                  <Mic className="h-3 w-3 text-green-500 flex-shrink-0" />
+                  <span className="text-xs truncate">Voice Pattern</span>
+                </div>
+                <span className="text-xs font-medium ml-2 flex-shrink-0 capitalize">{monitoringData.voicePattern}</span>
+              </div>
+
+              <div className="flex items-center justify-between p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                <div className="flex items-center space-x-2 flex-1 min-w-0">
+                  <Contact className="h-3 w-3 text-blue-500 flex-shrink-0" />
+                  <span className="text-xs truncate">Social Score</span>
+                </div>
+                <span className="text-xs font-medium ml-2 flex-shrink-0">{monitoringData.socialScore}/10</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Parent Control Actions */}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Parent Controls</h3>
+              <Switch
+                checked={isParentMode}
+                onCheckedChange={setIsParentMode}
+              />
+            </div>
+
+            {isParentMode && (
+              <div className="space-y-2">
+                <p className="text-xs text-yellow-800 dark:text-yellow-200 mb-2">
+                  Parent override active
+                </p>
+                
+                <div className="grid grid-cols-2 gap-1.5">
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    onClick={() => handleRemoteCommand('lock')}
+                    className="text-xs px-2 py-1.5 h-auto"
+                  >
+                    <Lock className="h-3 w-3 mr-1" />
+                    Lock
+                  </Button>
+                  
+                  <Button
+                    size="sm"
+                    variant="default"
+                    onClick={() => handleRemoteCommand('unlock')}
+                    className="text-xs px-2 py-1.5 h-auto"
+                  >
+                    <Unlock className="h-3 w-3 mr-1" />
+                    Unlock
+                  </Button>
+                  
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => requestPermission(key as keyof DevicePermissions)}
-                    className="text-xs px-2 py-1 h-auto flex-shrink-0 ml-2"
+                    onClick={() => handleRemoteCommand('locate')}
+                    className="text-xs px-2 py-1.5 h-auto"
                   >
-                    Request
+                    <MapPin className="h-3 w-3 mr-1" />
+                    Locate
                   </Button>
-                )}
+                  
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    onClick={() => handleRemoteCommand('emergency')}
+                    className="text-xs px-2 py-1.5 h-auto"
+                  >
+                    🚨 SOS
+                  </Button>
+                </div>
               </div>
-            ))}
+            )}
           </div>
-        </div>
-
-        {/* AI Detection */}
-        <div className="p-3 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-base font-semibold mb-2">AI Detection</h2>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between p-2 bg-red-50 dark:bg-red-900/20 rounded-lg">
-              <div className="flex items-center space-x-2 flex-1 min-w-0">
-                <Heart className="h-3 w-3 text-red-500 flex-shrink-0" />
-                <span className="text-xs truncate">Heart Rate</span>
-              </div>
-              <span className="text-xs font-medium ml-2 flex-shrink-0">{monitoringData.heartRate} BPM</span>
-            </div>
-
-            <div className="flex items-center justify-between p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
-              <div className="flex items-center space-x-2 flex-1 min-w-0">
-                <AlertTriangle className="h-3 w-3 text-yellow-500 flex-shrink-0" />
-                <span className="text-xs truncate">Stress Level</span>
-              </div>
-              <span className={`text-xs font-medium ml-2 flex-shrink-0 ${getStressColor(monitoringData.stressLevel)}`}>
-                {monitoringData.stressLevel}/10
-              </span>
-            </div>
-
-            <div className="flex items-center justify-between p-2 bg-green-50 dark:bg-green-900/20 rounded-lg">
-              <div className="flex items-center space-x-2 flex-1 min-w-0">
-                <Mic className="h-3 w-3 text-green-500 flex-shrink-0" />
-                <span className="text-xs truncate">Voice Pattern</span>
-              </div>
-              <span className="text-xs font-medium ml-2 flex-shrink-0 capitalize">{monitoringData.voicePattern}</span>
-            </div>
-
-            <div className="flex items-center justify-between p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-              <div className="flex items-center space-x-2 flex-1 min-w-0">
-                <Contact className="h-3 w-3 text-blue-500 flex-shrink-0" />
-                <span className="text-xs truncate">Social Score</span>
-              </div>
-              <span className="text-xs font-medium ml-2 flex-shrink-0">{monitoringData.socialScore}/10</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Emergency Control Center */}
-        <div className="p-3 border-b border-gray-200 dark:border-gray-700">
-          <div className="flex items-center justify-between mb-2">
-            <h2 className="text-base font-semibold">Emergency Control</h2>
-            <Switch
-              checked={isParentMode}
-              onCheckedChange={setIsParentMode}
-            />
-          </div>
-
-          {isParentMode && (
-            <div className="space-y-2">
-              <p className="text-xs text-yellow-800 dark:text-yellow-200 mb-2">
-                Parent override active
-              </p>
-              
-              <div className="grid grid-cols-2 gap-1.5">
-                <Button
-                  size="sm"
-                  variant="destructive"
-                  onClick={() => handleRemoteCommand('lock')}
-                  className="text-xs px-2 py-1.5 h-auto"
-                >
-                  <Lock className="h-3 w-3 mr-1" />
-                  Lock
-                </Button>
-                
-                <Button
-                  size="sm"
-                  variant="default"
-                  onClick={() => handleRemoteCommand('unlock')}
-                  className="text-xs px-2 py-1.5 h-auto"
-                >
-                  <Unlock className="h-3 w-3 mr-1" />
-                  Unlock
-                </Button>
-                
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => handleRemoteCommand('locate')}
-                  className="text-xs px-2 py-1.5 h-auto"
-                >
-                  <MapPin className="h-3 w-3 mr-1" />
-                  Locate
-                </Button>
-                
-                <Button
-                  size="sm"
-                  variant="destructive"
-                  onClick={() => handleRemoteCommand('emergency')}
-                  className="text-xs px-2 py-1.5 h-auto"
-                >
-                  🚨 SOS
-                </Button>
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Safety Features */}
