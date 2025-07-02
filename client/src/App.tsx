@@ -13,6 +13,7 @@ import SchoolMode from "@/pages/school-mode";
 import BullyingDetection from "@/pages/bullying-detection";
 import MobileIntegration from "@/pages/mobile-integration";
 import MobileDemo from "@/pages/mobile-demo";
+import SplitView from "@/pages/split-view";
 import NotFound from "@/pages/not-found";
 import { useEffect } from "react";
 
@@ -28,6 +29,7 @@ function Router() {
       <Route path="/bullying-detection" component={BullyingDetection} />
       <Route path="/mobile-integration" component={MobileIntegration} />
       <Route path="/mobile-demo" component={MobileDemo} />
+      <Route path="/split-view" component={SplitView} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -60,10 +62,13 @@ function App() {
     };
   }, [subscribe]);
 
+  // Check if we're on the split-view route to apply different styling
+  const isSplitView = window.location.pathname === '/split-view';
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <div className="mobile-container bg-white dark:bg-gray-900">
+        <div className={isSplitView ? "h-screen overflow-hidden" : "mobile-container bg-white dark:bg-gray-900"}>
           <Toaster />
           <Router />
         </div>
