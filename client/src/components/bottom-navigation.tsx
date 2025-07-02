@@ -18,20 +18,25 @@ export default function BottomNavigation() {
   const [location] = useLocation();
 
   return (
-    <div className="bottom-nav">
-      <div className="flex justify-around py-2">
+    <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 z-50 safe-area-inset-bottom">
+      <div className="grid grid-cols-8 items-center py-1 px-0.5 max-w-full overflow-hidden">
         {navItems.map((item) => {
           const isActive = location === item.path;
           const Icon = item.icon;
           
           return (
-            <Link key={item.path} href={item.path}>
+            <Link key={item.path} href={item.path} className="col-span-1">
               <Button
                 variant="ghost"
-                className={`bottom-nav-item ${isActive ? 'active' : 'inactive'}`}
+                size="sm"
+                className={`flex flex-col items-center space-y-0.5 h-auto py-1 px-0.5 w-full text-center ${
+                  isActive
+                    ? "text-blue-600 dark:text-blue-400"
+                    : "text-gray-600 dark:text-gray-400"
+                }`}
               >
-                <Icon className="h-5 w-5" />
-                <span className="text-xs">{item.label}</span>
+                <Icon className="h-3.5 w-3.5 flex-shrink-0" />
+                <span className="text-xs truncate max-w-full leading-tight">{item.label}</span>
               </Button>
             </Link>
           );

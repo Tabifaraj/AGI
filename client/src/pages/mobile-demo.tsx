@@ -214,26 +214,26 @@ export default function MobileDemo() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-2 pb-20">
       {/* Mobile App Header */}
-      <div className="bg-blue-600 text-white p-4 rounded-t-xl shadow-lg">
+      <div className="bg-blue-600 text-white p-3 rounded-t-xl shadow-lg">
         <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-bold">AGI Family Guardian</h1>
-            <p className="text-blue-100 text-sm">Mobile Protection Demo</p>
+          <div className="flex-1 min-w-0">
+            <h1 className="text-lg font-bold truncate">AGI Family Guardian</h1>
+            <p className="text-blue-100 text-xs truncate">Mobile Protection Demo</p>
           </div>
-          <div className="flex items-center space-x-2">
-            <Signal className="h-4 w-4" />
+          <div className="flex items-center space-x-1.5 flex-shrink-0">
+            <Signal className="h-3.5 w-3.5" />
             <div className="flex space-x-0.5">
               {Array.from({ length: 4 }, (_, i) => (
                 <div
                   key={i}
-                  className={`w-1 bg-white ${i < Math.ceil(deviceStatus.signalStrength / 25) ? 'opacity-100' : 'opacity-30'}`}
+                  className={`w-0.5 bg-white ${i < Math.ceil(deviceStatus.signalStrength / 25) ? 'opacity-100' : 'opacity-30'}`}
                   style={{ height: `${(i + 1) * 2}px` }}
                 />
               ))}
             </div>
-            <Battery className={`h-4 w-4 ${getBatteryColor(deviceStatus.batteryLevel)}`} />
+            <Battery className={`h-3.5 w-3.5 ${getBatteryColor(deviceStatus.batteryLevel)}`} />
             <span className="text-xs">{Math.round(deviceStatus.batteryLevel)}%</span>
           </div>
         </div>
@@ -241,37 +241,37 @@ export default function MobileDemo() {
 
       <div className="bg-white dark:bg-gray-800 rounded-b-xl shadow-lg overflow-hidden">
         {/* Device Status */}
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-lg font-semibold">Device Status</h2>
-            <Badge variant={deviceStatus.isConnected ? "default" : "secondary"}>
+        <div className="p-3 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-base font-semibold">Device Status</h2>
+            <Badge variant={deviceStatus.isConnected ? "default" : "secondary"} className="text-xs">
               {deviceStatus.isConnected ? "Connected" : "Offline"}
             </Badge>
           </div>
           
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div className="flex items-center space-x-2">
-              <Smartphone className="h-4 w-4 text-blue-600" />
-              <span>{deviceStatus.deviceName}</span>
+          <div className="grid grid-cols-2 gap-2 text-xs">
+            <div className="flex items-center space-x-1.5">
+              <Smartphone className="h-3.5 w-3.5 text-blue-600 flex-shrink-0" />
+              <span className="truncate">{deviceStatus.deviceName}</span>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-1.5">
               {deviceStatus.isLocked ? (
-                <Lock className="h-4 w-4 text-red-500" />
+                <Lock className="h-3.5 w-3.5 text-red-500 flex-shrink-0" />
               ) : (
-                <Unlock className="h-4 w-4 text-green-500" />
+                <Unlock className="h-3.5 w-3.5 text-green-500 flex-shrink-0" />
               )}
-              <span>{deviceStatus.isLocked ? "Locked" : "Unlocked"}</span>
+              <span className="truncate">{deviceStatus.isLocked ? "Locked" : "Unlocked"}</span>
             </div>
           </div>
 
           {deviceStatus.location && (
-            <div className="mt-3 p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-              <div className="flex items-center space-x-2 text-sm">
-                <MapPin className="h-4 w-4 text-blue-600" />
-                <span>
+            <div className="mt-2 p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+              <div className="flex items-center space-x-1.5 text-xs">
+                <MapPin className="h-3.5 w-3.5 text-blue-600 flex-shrink-0" />
+                <span className="truncate">
                   {deviceStatus.location.latitude.toFixed(4)}, {deviceStatus.location.longitude.toFixed(4)}
                 </span>
-                <span className="text-gray-500 text-xs">
+                <span className="text-gray-500 text-xs flex-shrink-0">
                   (±{deviceStatus.location.accuracy}m)
                 </span>
               </div>
@@ -280,28 +280,28 @@ export default function MobileDemo() {
         </div>
 
         {/* Native Permissions */}
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-lg font-semibold mb-3">Native Permissions</h2>
-          <div className="space-y-3">
+        <div className="p-3 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-base font-semibold mb-2">Native Permissions</h2>
+          <div className="space-y-2">
             {Object.entries(permissions).map(([key, value]) => (
               <div key={key} className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  {key === 'location' && <MapPin className="h-4 w-4 text-blue-600" />}
-                  {key === 'camera' && <Camera className="h-4 w-4 text-green-600" />}
-                  {key === 'microphone' && <Mic className="h-4 w-4 text-red-600" />}
-                  {key === 'contacts' && <Contact className="h-4 w-4 text-purple-600" />}
-                  {key === 'notifications' && <Bell className="h-4 w-4 text-yellow-600" />}
-                  {key === 'biometric' && <AlertTriangle className="h-4 w-4 text-indigo-600" />}
-                  <span className="text-sm font-medium capitalize">{key}</span>
+                <div className="flex items-center space-x-1.5 flex-1 min-w-0">
+                  {key === 'location' && <MapPin className="h-3.5 w-3.5 text-blue-600 flex-shrink-0" />}
+                  {key === 'camera' && <Camera className="h-3.5 w-3.5 text-green-600 flex-shrink-0" />}
+                  {key === 'microphone' && <Mic className="h-3.5 w-3.5 text-red-600 flex-shrink-0" />}
+                  {key === 'contacts' && <Contact className="h-3.5 w-3.5 text-purple-600 flex-shrink-0" />}
+                  {key === 'notifications' && <Bell className="h-3.5 w-3.5 text-yellow-600 flex-shrink-0" />}
+                  {key === 'biometric' && <AlertTriangle className="h-3.5 w-3.5 text-indigo-600 flex-shrink-0" />}
+                  <span className="text-xs font-medium capitalize truncate">{key}</span>
                 </div>
                 {value ? (
-                  <Badge variant="default" className="text-xs">Granted</Badge>
+                  <Badge variant="default" className="text-xs flex-shrink-0 ml-2">OK</Badge>
                 ) : (
                   <Button
                     size="sm"
                     variant="outline"
                     onClick={() => requestPermission(key as keyof DevicePermissions)}
-                    className="text-xs px-2 py-1"
+                    className="text-xs px-2 py-1 h-auto flex-shrink-0 ml-2"
                   >
                     Request
                   </Button>
@@ -311,50 +311,50 @@ export default function MobileDemo() {
           </div>
         </div>
 
-        {/* Real-time Monitoring */}
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-lg font-semibold mb-3">Real-time Monitoring</h2>
-          <div className="space-y-3">
+        {/* AI Detection */}
+        <div className="p-3 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-base font-semibold mb-2">AI Detection</h2>
+          <div className="space-y-2">
             <div className="flex items-center justify-between p-2 bg-red-50 dark:bg-red-900/20 rounded-lg">
-              <div className="flex items-center space-x-2">
-                <Heart className="h-4 w-4 text-red-500" />
-                <span className="text-sm">Heart Rate</span>
+              <div className="flex items-center space-x-2 flex-1 min-w-0">
+                <Heart className="h-3 w-3 text-red-500 flex-shrink-0" />
+                <span className="text-xs truncate">Heart Rate</span>
               </div>
-              <span className="text-sm font-medium">{monitoringData.heartRate} BPM</span>
+              <span className="text-xs font-medium ml-2 flex-shrink-0">{monitoringData.heartRate} BPM</span>
             </div>
 
             <div className="flex items-center justify-between p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
-              <div className="flex items-center space-x-2">
-                <AlertTriangle className="h-4 w-4 text-yellow-500" />
-                <span className="text-sm">Stress Level</span>
+              <div className="flex items-center space-x-2 flex-1 min-w-0">
+                <AlertTriangle className="h-3 w-3 text-yellow-500 flex-shrink-0" />
+                <span className="text-xs truncate">Stress Level</span>
               </div>
-              <span className={`text-sm font-medium ${getStressColor(monitoringData.stressLevel)}`}>
+              <span className={`text-xs font-medium ml-2 flex-shrink-0 ${getStressColor(monitoringData.stressLevel)}`}>
                 {monitoringData.stressLevel}/10
               </span>
             </div>
 
             <div className="flex items-center justify-between p-2 bg-green-50 dark:bg-green-900/20 rounded-lg">
-              <div className="flex items-center space-x-2">
-                <Mic className="h-4 w-4 text-green-500" />
-                <span className="text-sm">Voice Pattern</span>
+              <div className="flex items-center space-x-2 flex-1 min-w-0">
+                <Mic className="h-3 w-3 text-green-500 flex-shrink-0" />
+                <span className="text-xs truncate">Voice Pattern</span>
               </div>
-              <span className="text-sm font-medium capitalize">{monitoringData.voicePattern}</span>
+              <span className="text-xs font-medium ml-2 flex-shrink-0 capitalize">{monitoringData.voicePattern}</span>
             </div>
 
             <div className="flex items-center justify-between p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-              <div className="flex items-center space-x-2">
-                <Contact className="h-4 w-4 text-blue-500" />
-                <span className="text-sm">Social Score</span>
+              <div className="flex items-center space-x-2 flex-1 min-w-0">
+                <Contact className="h-3 w-3 text-blue-500 flex-shrink-0" />
+                <span className="text-xs truncate">Social Score</span>
               </div>
-              <span className="text-sm font-medium">{monitoringData.socialScore}/10</span>
+              <span className="text-xs font-medium ml-2 flex-shrink-0">{monitoringData.socialScore}/10</span>
             </div>
           </div>
         </div>
 
-        {/* Parent Controls */}
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-lg font-semibold">Parent Mode</h2>
+        {/* Emergency Control Center */}
+        <div className="p-3 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-base font-semibold">Emergency Control</h2>
             <Switch
               checked={isParentMode}
               onCheckedChange={setIsParentMode}
@@ -363,48 +363,48 @@ export default function MobileDemo() {
 
           {isParentMode && (
             <div className="space-y-2">
-              <p className="text-sm text-yellow-800 dark:text-yellow-200 mb-3">
-                Parent override controls are now active
+              <p className="text-xs text-yellow-800 dark:text-yellow-200 mb-2">
+                Parent override active
               </p>
               
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-1.5">
                 <Button
                   size="sm"
                   variant="destructive"
                   onClick={() => handleRemoteCommand('lock')}
-                  className="text-xs"
+                  className="text-xs px-2 py-1.5 h-auto"
                 >
                   <Lock className="h-3 w-3 mr-1" />
-                  Lock Device
+                  Lock
                 </Button>
                 
                 <Button
                   size="sm"
                   variant="default"
                   onClick={() => handleRemoteCommand('unlock')}
-                  className="text-xs"
+                  className="text-xs px-2 py-1.5 h-auto"
                 >
                   <Unlock className="h-3 w-3 mr-1" />
-                  Unlock Device
+                  Unlock
                 </Button>
                 
                 <Button
                   size="sm"
                   variant="outline"
                   onClick={() => handleRemoteCommand('locate')}
-                  className="text-xs"
+                  className="text-xs px-2 py-1.5 h-auto"
                 >
                   <MapPin className="h-3 w-3 mr-1" />
-                  Get Location
+                  Locate
                 </Button>
                 
                 <Button
                   size="sm"
                   variant="destructive"
                   onClick={() => handleRemoteCommand('emergency')}
-                  className="text-xs"
+                  className="text-xs px-2 py-1.5 h-auto"
                 >
-                  🚨 Emergency
+                  🚨 SOS
                 </Button>
               </div>
             </div>
@@ -412,48 +412,50 @@ export default function MobileDemo() {
         </div>
 
         {/* Safety Features */}
-        <div className="p-4">
-          <h2 className="text-lg font-semibold mb-3">Safety Features</h2>
+        <div className="p-3">
+          <h2 className="text-base font-semibold mb-2">Safety Features</h2>
           <div className="space-y-2">
             <Button
-              className="w-full"
+              className="w-full text-xs py-2"
+              size="sm"
               onClick={startLocationTracking}
               disabled={!permissions.location}
             >
-              <MapPin className="h-4 w-4 mr-2" />
+              <MapPin className="h-3.5 w-3.5 mr-1.5" />
               Share Current Location
             </Button>
             
             <Button
-              className="w-full"
+              className="w-full text-xs py-2"
+              size="sm"
               variant="destructive"
               onClick={() => handleRemoteCommand('emergency')}
             >
               🚨 Emergency Alert
             </Button>
             
-            <div className="text-xs text-gray-500 mt-3 p-2 bg-gray-50 dark:bg-gray-800 rounded">
-              <strong>Demo Features:</strong> This demonstrates native mobile app functionality including real-time location tracking, voice stress monitoring, remote device control, and emergency response systems. In a real deployment, this would be a native iOS/Android app with full device permissions.
+            <div className="text-xs text-gray-500 mt-2 p-2 bg-gray-50 dark:bg-gray-800 rounded">
+              <strong>Demo Features:</strong> Native mobile app with real-time location tracking, voice stress monitoring, remote device control, and emergency response. In production, this would be a native iOS/Android app with full device permissions.
             </div>
           </div>
         </div>
       </div>
 
       {/* Connection Status */}
-      <div className="mt-4 p-3 bg-white dark:bg-gray-800 rounded-xl shadow-lg">
+      <div className="mt-2 p-2 bg-white dark:bg-gray-800 rounded-xl shadow-lg mb-16">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-1.5 flex-1 min-w-0">
             {deviceStatus.isConnected ? (
-              <Wifi className="h-4 w-4 text-green-500" />
+              <Wifi className="h-3.5 w-3.5 text-green-500 flex-shrink-0" />
             ) : (
-              <WifiOff className="h-4 w-4 text-red-500" />
+              <WifiOff className="h-3.5 w-3.5 text-red-500 flex-shrink-0" />
             )}
-            <span className="text-sm font-medium">
+            <span className="text-xs font-medium truncate">
               {deviceStatus.isConnected ? "Connected to Parent System" : "Connection Lost"}
             </span>
           </div>
-          <div className="text-xs text-gray-500">
-            Last update: {monitoringData.lastActivity.toLocaleTimeString()}
+          <div className="text-xs text-gray-500 flex-shrink-0 ml-2">
+            {monitoringData.lastActivity.toLocaleTimeString()}
           </div>
         </div>
       </div>
