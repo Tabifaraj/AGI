@@ -67,6 +67,7 @@ export default function MobileDemo() {
   });
   
   const [isParentMode, setIsParentMode] = useState(false);
+  const [activeTab, setActiveTab] = useState('devices');
   const [monitoringData, setMonitoringData] = useState({
     heartRate: 72,
     stressLevel: 3,
@@ -293,72 +294,251 @@ export default function MobileDemo() {
             </Badge>
           </div>
           
-          <div className="grid grid-cols-2 gap-3 mb-4">
-            {/* Smart Devices Section */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-              <div className="flex items-center space-x-2 mb-3">
-                <Smartphone className="h-4 w-4 text-blue-600" />
-                <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">Smart Devices</h3>
-              </div>
-              
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-600 dark:text-gray-400">📱 Emma's iPhone</span>
-                  <span className="text-green-600 font-medium">Online</span>
-                </div>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-600 dark:text-gray-400">⌚ Emma's Apple Watch</span>
-                  <span className="text-green-600 font-medium">78 BPM</span>
-                </div>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-600 dark:text-gray-400">💻 Alex's MacBook</span>
-                  <span className="text-green-600 font-medium">Online</span>
-                </div>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-600 dark:text-gray-400">📱 Parent Phone</span>
-                  <span className="text-green-600 font-medium">Online</span>
-                </div>
-              </div>
-            </div>
+          {/* Tab Navigation */}
+          <div className="flex space-x-1 mb-4">
+            <Button
+              size="sm"
+              variant={activeTab === 'devices' ? 'default' : 'outline'}
+              onClick={() => setActiveTab('devices')}
+              className="flex items-center space-x-1 text-xs px-2 py-1"
+            >
+              <Smartphone className="h-3 w-3" />
+              <span>Smart Devices</span>
+            </Button>
+            <Button
+              size="sm"
+              variant={activeTab === 'ai' ? 'default' : 'outline'}
+              onClick={() => setActiveTab('ai')}
+              className="flex items-center space-x-1 text-xs px-2 py-1"
+            >
+              <Heart className="h-3 w-3" />
+              <span>AI Detection</span>
+            </Button>
+            <Button
+              size="sm"
+              variant={activeTab === 'location' ? 'default' : 'outline'}
+              onClick={() => setActiveTab('location')}
+              className="flex items-center space-x-1 text-xs px-2 py-1"
+            >
+              <MapPin className="h-3 w-3" />
+              <span>Location</span>
+            </Button>
+            <Button
+              size="sm"
+              variant={activeTab === 'communication' ? 'default' : 'outline'}
+              onClick={() => setActiveTab('communication')}
+              className="flex items-center space-x-1 text-xs px-2 py-1"
+            >
+              <Contact className="h-3 w-3" />
+              <span>Communication</span>
+            </Button>
+            <Button
+              size="sm"
+              variant={activeTab === 'screen' ? 'default' : 'outline'}
+              onClick={() => setActiveTab('screen')}
+              className="flex items-center space-x-1 text-xs px-2 py-1"
+            >
+              <Eye className="h-3 w-3" />
+              <span>Screen Time</span>
+            </Button>
+          </div>
 
-            {/* AI Detection Section */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-              <div className="flex items-center space-x-2 mb-3">
-                <Heart className="h-4 w-4 text-red-500" />
-                <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">AI Detection</h3>
+          {/* Tab Content */}
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700 mb-4">
+            {activeTab === 'devices' && (
+              <div>
+                <div className="flex items-center space-x-2 mb-3">
+                  <Smartphone className="h-4 w-4 text-blue-600" />
+                  <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">Smart Devices</h3>
+                </div>
+                
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 rounded-full bg-pink-100 flex items-center justify-center">
+                      <span className="text-lg">👧</span>
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between text-xs mb-1">
+                        <span className="text-gray-600 dark:text-gray-400">📱 Emma's iPhone</span>
+                        <span className="text-green-600 font-medium">ONLINE</span>
+                      </div>
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-gray-600 dark:text-gray-400">⌚ Emma's Apple Watch - Heart rate:</span>
+                        <div className="flex items-center space-x-1">
+                          <Badge className="bg-green-100 text-green-800 text-xs">78 BPM</Badge>
+                          <Badge className="bg-green-100 text-green-800 text-xs">Good</Badge>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                      <span className="text-lg">👦</span>
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between text-xs mb-1">
+                        <span className="text-gray-600 dark:text-gray-400">💻 Alex's MacBook</span>
+                        <span className="text-green-600 font-medium">Online</span>
+                      </div>
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-gray-600 dark:text-gray-400">📱 Parent Phone</span>
+                        <span className="text-green-600 font-medium">Online</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-xs">
-                  <div className="flex items-center space-x-1">
-                    <Heart className="h-3 w-3 text-red-500" />
-                    <span className="text-gray-600 dark:text-gray-400">Voice monitoring:</span>
-                  </div>
-                  <span className="text-green-600 font-medium">Normal</span>
+            )}
+
+            {activeTab === 'ai' && (
+              <div>
+                <div className="flex items-center space-x-2 mb-3">
+                  <Heart className="h-4 w-4 text-red-500" />
+                  <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">AI Detection</h3>
                 </div>
-                <div className="flex items-center justify-between text-xs">
-                  <div className="flex items-center space-x-1">
-                    <Heart className="h-3 w-3 text-red-500" />
-                    <span className="text-gray-600 dark:text-gray-400">Biometric alerts:</span>
-                  </div>
-                  <span className="text-green-600 font-medium">Enabled</span>
-                </div>
-                <div className="flex items-center justify-between text-xs">
-                  <div className="flex items-center space-x-1">
-                    <MapPin className="h-3 w-3 text-blue-500" />
-                    <span className="text-gray-600 dark:text-gray-400">Location tracking:</span>
-                  </div>
-                  <span className="text-green-600 font-medium">Active</span>
-                </div>
-                <div className="flex items-center justify-between text-xs">
-                  <div className="flex items-center space-x-1">
-                    <Eye className="h-3 w-3 text-purple-500" />
-                    <span className="text-gray-600 dark:text-gray-400">AI threat detection:</span>
-                  </div>
-                  <span className="text-green-600 font-medium">Online</span>
+                
+                <div className="space-y-3">
+                  {[
+                    { name: 'Emma', avatar: '👧', color: 'pink' },
+                    { name: 'Alex', avatar: '👦', color: 'blue' },
+                    { name: 'Mom', avatar: '👩', color: 'purple' }
+                  ].map((person, index) => (
+                    <div key={person.name} className="flex items-center space-x-3">
+                      <div className={`w-8 h-8 rounded-full bg-${person.color}-100 flex items-center justify-center`}>
+                        <span className="text-lg">{person.avatar}</span>
+                      </div>
+                      <div className="flex-1 space-y-1">
+                        <div className="flex items-center justify-between text-xs">
+                          <div className="flex items-center space-x-1">
+                            <Mic className="h-3 w-3 text-green-500" />
+                            <span className="text-gray-600 dark:text-gray-400">Voice monitoring:</span>
+                          </div>
+                          <span className="text-green-600 font-medium">Active</span>
+                        </div>
+                        <div className="flex items-center justify-between text-xs">
+                          <div className="flex items-center space-x-1">
+                            <Eye className="h-3 w-3 text-purple-500" />
+                            <span className="text-gray-600 dark:text-gray-400">AI threat detection:</span>
+                          </div>
+                          <span className="text-green-600 font-medium">Online</span>
+                        </div>
+                        <div className="flex items-center justify-between text-xs">
+                          <div className="flex items-center space-x-1">
+                            <Heart className="h-3 w-3 text-red-500" />
+                            <span className="text-gray-600 dark:text-gray-400">Biometric alerts:</span>
+                          </div>
+                          <span className="text-green-600 font-medium">Enabled</span>
+                        </div>
+                        <div className="flex items-center justify-between text-xs">
+                          <div className="flex items-center space-x-1">
+                            <MapPin className="h-3 w-3 text-blue-500" />
+                            <span className="text-gray-600 dark:text-gray-400">Location tracking:</span>
+                          </div>
+                          <span className="text-green-600 font-medium">Active</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
-            </div>
+            )}
+
+            {activeTab === 'location' && (
+              <div>
+                <div className="flex items-center space-x-2 mb-3">
+                  <MapPin className="h-4 w-4 text-blue-500" />
+                  <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">Location Tracking</h3>
+                </div>
+                
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-gray-600 dark:text-gray-400">🏠 Emma at Home</span>
+                    <Badge className="bg-green-100 text-green-800 text-xs">Safe Zone</Badge>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-gray-600 dark:text-gray-400">🏫 Alex at School</span>
+                    <Badge className="bg-green-100 text-green-800 text-xs">Safe Zone</Badge>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-gray-600 dark:text-gray-400">🚗 Mom Driving</span>
+                    <Badge className="bg-blue-100 text-blue-800 text-xs">In Transit</Badge>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-gray-600 dark:text-gray-400">📍 Geofence Alerts</span>
+                    <span className="text-green-600 font-medium">Active</span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-gray-600 dark:text-gray-400">⚠️ Danger Zone Alerts</span>
+                    <span className="text-green-600 font-medium">Enabled</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'communication' && (
+              <div>
+                <div className="flex items-center space-x-2 mb-3">
+                  <Contact className="h-4 w-4 text-purple-500" />
+                  <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">Communication Safety</h3>
+                </div>
+                
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-gray-600 dark:text-gray-400">📱 Text Message Scanning</span>
+                    <span className="text-green-600 font-medium">Active</span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-gray-600 dark:text-gray-400">🚫 Cyberbullying Detection</span>
+                    <span className="text-green-600 font-medium">Enabled</span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-gray-600 dark:text-gray-400">👥 Stranger Contact Alerts</span>
+                    <span className="text-green-600 font-medium">Active</span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-gray-600 dark:text-gray-400">🔒 Inappropriate Content Block</span>
+                    <span className="text-green-600 font-medium">Enabled</span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-gray-600 dark:text-gray-400">📞 Emergency Contacts</span>
+                    <Badge className="bg-blue-100 text-blue-800 text-xs">5 Active</Badge>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'screen' && (
+              <div>
+                <div className="flex items-center space-x-2 mb-3">
+                  <Eye className="h-4 w-4 text-indigo-500" />
+                  <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">Screen Time Control</h3>
+                </div>
+                
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-gray-600 dark:text-gray-400">📱 Daily Screen Limit</span>
+                    <Badge className="bg-orange-100 text-orange-800 text-xs">2h 45m / 4h</Badge>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-gray-600 dark:text-gray-400">🎮 App Usage Monitoring</span>
+                    <span className="text-green-600 font-medium">Active</span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-gray-600 dark:text-gray-400">🚫 Inappropriate App Block</span>
+                    <Badge className="bg-red-100 text-red-800 text-xs">3 Blocked</Badge>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-gray-600 dark:text-gray-400">🕐 Bedtime Mode</span>
+                    <span className="text-blue-600 font-medium">9:00 PM - 7:00 AM</span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-gray-600 dark:text-gray-400">📚 Educational Apps</span>
+                    <span className="text-green-600 font-medium">Unlimited</span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Emergency Lock Button */}
