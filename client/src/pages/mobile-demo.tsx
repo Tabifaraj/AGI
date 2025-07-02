@@ -18,7 +18,8 @@ import {
   AlertTriangle,
   Heart,
   Wifi,
-  WifiOff
+  WifiOff,
+  Eye
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -72,6 +73,7 @@ export default function MobileDemo() {
     voicePattern: 'normal',
     socialScore: 8,
     lastActivity: new Date(),
+    isMonitoring: true,
   });
 
   useEffect(() => {
@@ -280,141 +282,120 @@ export default function MobileDemo() {
         </div>
 
         {/* Emergency Control Center */}
-        <div className="p-3 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-base font-semibold mb-3">Emergency Control Center</h2>
+        <div className="p-4 bg-red-50 dark:bg-red-900/10 border-b border-red-200 dark:border-red-800">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center space-x-2">
+              <AlertTriangle className="h-5 w-5 text-red-600" />
+              <h2 className="text-lg font-semibold text-red-800 dark:text-red-200">Emergency Control Center</h2>
+            </div>
+            <Badge variant="outline" className="text-xs border-gray-400 text-gray-600">
+              {monitoringData.isMonitoring ? 'Monitoring' : 'Offline'}
+            </Badge>
+          </div>
           
-          {/* Smart Devices Section */}
-          <div className="mb-4 w-full">
-            <h3 className="text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Smart Devices</h3>
-            <div className="w-full bg-gray-50 dark:bg-gray-800/50 rounded-lg p-3 space-y-2">
-              {Object.entries(permissions).map(([key, value]) => (
-                <div key={key} className="flex items-center justify-between w-full">
-                  <div className="flex items-center space-x-2 flex-1 min-w-0 max-w-[70%]">
-                    {key === 'location' && <MapPin className="h-3.5 w-3.5 text-blue-600 flex-shrink-0" />}
-                    {key === 'camera' && <Camera className="h-3.5 w-3.5 text-green-600 flex-shrink-0" />}
-                    {key === 'microphone' && <Mic className="h-3.5 w-3.5 text-red-600 flex-shrink-0" />}
-                    {key === 'contacts' && <Contact className="h-3.5 w-3.5 text-purple-600 flex-shrink-0" />}
-                    {key === 'notifications' && <Bell className="h-3.5 w-3.5 text-yellow-600 flex-shrink-0" />}
-                    {key === 'biometric' && <AlertTriangle className="h-3.5 w-3.5 text-indigo-600 flex-shrink-0" />}
-                    <span className="text-xs font-medium capitalize break-words">{key}</span>
-                  </div>
-                  <div className="flex-shrink-0 ml-2">
-                    {value ? (
-                      <Badge variant="default" className="text-xs">ON</Badge>
-                    ) : (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => requestPermission(key as keyof DevicePermissions)}
-                        className="text-xs px-2 py-1 h-auto"
-                      >
-                        Enable
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* AI Detection Section */}
-          <div className="mb-4 w-full">
-            <h3 className="text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">AI Detection</h3>
-            <div className="w-full bg-gray-50 dark:bg-gray-800/50 rounded-lg p-3 space-y-2">
-              <div className="flex items-center justify-between w-full p-2 bg-red-50 dark:bg-red-900/20 rounded-lg">
-                <div className="flex items-center space-x-2 flex-1 min-w-0 max-w-[65%]">
-                  <Heart className="h-3 w-3 text-red-500 flex-shrink-0" />
-                  <span className="text-xs break-words">Heart Rate</span>
-                </div>
-                <span className="text-xs font-medium flex-shrink-0 ml-2">{monitoringData.heartRate} BPM</span>
+          <div className="grid grid-cols-2 gap-3 mb-4">
+            {/* Smart Devices Section */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
+              <div className="flex items-center space-x-2 mb-3">
+                <Smartphone className="h-4 w-4 text-blue-600" />
+                <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">Smart Devices</h3>
               </div>
-
-              <div className="flex items-center justify-between w-full p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
-                <div className="flex items-center space-x-2 flex-1 min-w-0 max-w-[65%]">
-                  <AlertTriangle className="h-3 w-3 text-yellow-500 flex-shrink-0" />
-                  <span className="text-xs break-words">Stress Level</span>
-                </div>
-                <span className={`text-xs font-medium flex-shrink-0 ml-2 ${getStressColor(monitoringData.stressLevel)}`}>
-                  {monitoringData.stressLevel}/10
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between w-full p-2 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                <div className="flex items-center space-x-2 flex-1 min-w-0 max-w-[65%]">
-                  <Mic className="h-3 w-3 text-green-500 flex-shrink-0" />
-                  <span className="text-xs break-words">Voice Pattern</span>
-                </div>
-                <span className="text-xs font-medium flex-shrink-0 ml-2 capitalize break-words">{monitoringData.voicePattern}</span>
-              </div>
-
-              <div className="flex items-center justify-between w-full p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                <div className="flex items-center space-x-2 flex-1 min-w-0 max-w-[65%]">
-                  <Contact className="h-3 w-3 text-blue-500 flex-shrink-0" />
-                  <span className="text-xs break-words">Social Score</span>
-                </div>
-                <span className="text-xs font-medium flex-shrink-0 ml-2">{monitoringData.socialScore}/10</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Parent Control Actions */}
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Parent Controls</h3>
-              <Switch
-                checked={isParentMode}
-                onCheckedChange={setIsParentMode}
-              />
-            </div>
-
-            {isParentMode && (
+              
               <div className="space-y-2">
-                <p className="text-xs text-yellow-800 dark:text-yellow-200 mb-2">
-                  Parent override active
-                </p>
-                
-                <div className="grid grid-cols-2 gap-1.5">
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    onClick={() => handleRemoteCommand('lock')}
-                    className="text-xs px-2 py-1.5 h-auto"
-                  >
-                    <Lock className="h-3 w-3 mr-1" />
-                    Lock
-                  </Button>
-                  
-                  <Button
-                    size="sm"
-                    variant="default"
-                    onClick={() => handleRemoteCommand('unlock')}
-                    className="text-xs px-2 py-1.5 h-auto"
-                  >
-                    <Unlock className="h-3 w-3 mr-1" />
-                    Unlock
-                  </Button>
-                  
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => handleRemoteCommand('locate')}
-                    className="text-xs px-2 py-1.5 h-auto"
-                  >
-                    <MapPin className="h-3 w-3 mr-1" />
-                    Locate
-                  </Button>
-                  
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    onClick={() => handleRemoteCommand('emergency')}
-                    className="text-xs px-2 py-1.5 h-auto"
-                  >
-                    🚨 SOS
-                  </Button>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-gray-600 dark:text-gray-400">📱 Emma's iPhone</span>
+                  <span className="text-green-600 font-medium">Online</span>
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-gray-600 dark:text-gray-400">⌚ Emma's Apple Watch</span>
+                  <span className="text-green-600 font-medium">78 BPM</span>
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-gray-600 dark:text-gray-400">💻 Alex's MacBook</span>
+                  <span className="text-green-600 font-medium">Online</span>
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-gray-600 dark:text-gray-400">📱 Parent Phone</span>
+                  <span className="text-green-600 font-medium">Online</span>
                 </div>
               </div>
-            )}
+            </div>
+
+            {/* AI Detection Section */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
+              <div className="flex items-center space-x-2 mb-3">
+                <Heart className="h-4 w-4 text-red-500" />
+                <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">AI Detection</h3>
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center space-x-1">
+                    <Heart className="h-3 w-3 text-red-500" />
+                    <span className="text-gray-600 dark:text-gray-400">Voice monitoring:</span>
+                  </div>
+                  <span className="text-green-600 font-medium">Normal</span>
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center space-x-1">
+                    <Heart className="h-3 w-3 text-red-500" />
+                    <span className="text-gray-600 dark:text-gray-400">Biometric alerts:</span>
+                  </div>
+                  <span className="text-green-600 font-medium">Enabled</span>
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center space-x-1">
+                    <MapPin className="h-3 w-3 text-blue-500" />
+                    <span className="text-gray-600 dark:text-gray-400">Location tracking:</span>
+                  </div>
+                  <span className="text-green-600 font-medium">Active</span>
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center space-x-1">
+                    <Eye className="h-3 w-3 text-purple-500" />
+                    <span className="text-gray-600 dark:text-gray-400">AI threat detection:</span>
+                  </div>
+                  <span className="text-green-600 font-medium">Online</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Emergency Lock Button */}
+          <Button 
+            className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-lg mb-3"
+            onClick={() => handleRemoteCommand('emergency')}
+          >
+            <Lock className="h-4 w-4 mr-2" />
+            Emergency Lock All Devices
+          </Button>
+
+          {/* Test Buttons */}
+          <div className="flex space-x-2">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="flex-1 text-orange-600 border-orange-300 hover:bg-orange-50"
+              onClick={() => {
+                // Test heart rate alert
+                console.log('Testing heart rate alert...');
+              }}
+            >
+              <Heart className="h-3 w-3 mr-1" />
+              Test Heart Rate Alert
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="flex-1 text-purple-600 border-purple-300 hover:bg-purple-50"
+              onClick={() => {
+                // Test voice detection
+                console.log('Testing voice detection...');
+              }}
+            >
+              <Mic className="h-3 w-3 mr-1" />
+              Test Voice Detection
+            </Button>
           </div>
         </div>
 
