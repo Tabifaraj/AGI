@@ -1,0 +1,64 @@
+{
+  "name": "agi-family-guardian-mobile",
+  "version": "1.0.0",
+  "description": "AGI Family Guardian Mobile App with Native Device Permissions",
+  "main": "App.tsx",
+  "scripts": {
+    "start": "react-native start",
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "web": "expo start --web",
+    "build": "expo build",
+    "eject": "expo eject"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-native": "^0.72.0",
+    "react-native-web": "^0.19.0",
+    "react-native-permissions": "^3.8.0",
+    "react-native-geolocation-service": "^5.3.1",
+    "react-native-device-info": "^10.6.0",
+    "react-native-background-job": "^2.3.3",
+    "react-native-push-notification": "^8.1.1",
+    "react-native-contacts": "^7.0.8",
+    "react-native-biometrics": "^3.0.1",
+    "@react-native-async-storage/async-storage": "^1.19.0",
+    "react-native-app-state": "^1.1.3",
+    "react-native-sensors": "^7.3.6",
+    "react-native-health": "^1.19.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.0",
+    "@types/react-native": "^0.72.0",
+    "metro-react-native-babel-preset": "^0.76.0"
+  },
+  "permissions": {
+    "android": [
+      "android.permission.ACCESS_FINE_LOCATION",
+      "android.permission.ACCESS_COARSE_LOCATION",
+      "android.permission.CAMERA",
+      "android.permission.RECORD_AUDIO",
+      "android.permission.READ_CONTACTS",
+      "android.permission.WRITE_CONTACTS",
+      "android.permission.READ_EXTERNAL_STORAGE",
+      "android.permission.WRITE_EXTERNAL_STORAGE",
+      "android.permission.VIBRATE",
+      "android.permission.RECEIVE_BOOT_COMPLETED",
+      "android.permission.SYSTEM_ALERT_WINDOW",
+      "android.permission.USE_BIOMETRIC",
+      "android.permission.USE_FINGERPRINT",
+      "android.permission.BODY_SENSORS"
+    ],
+    "ios": [
+      "NSLocationWhenInUseUsageDescription",
+      "NSLocationAlwaysAndWhenInUseUsageDescription",
+      "NSCameraUsageDescription",
+      "NSMicrophoneUsageDescription",
+      "NSContactsUsageDescription",
+      "NSPhotoLibraryUsageDescription",
+      "NSHealthShareUsageDescription",
+      "NSHealthUpdateUsageDescription",
+      "NSMotionUsageDescription"
+    ]
+  }
+}

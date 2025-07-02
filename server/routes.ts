@@ -588,6 +588,231 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Mobile Device Integration routes
+  app.post('/api/device-location', async (req, res) => {
+    try {
+      const { deviceId, location, timestamp, permissions } = req.body;
+      
+      // Log location update activity
+      await storage.createActivity({
+        userId: req.user.id,
+        activityType: 'location_update',
+        description: `Location update received from device ${deviceId}`,
+        metadata: { deviceId, location, permissions }
+      });
+
+      // Check geofences and send alerts if needed
+      const zones = await checkGeofences(location);
+      
+      broadcast({
+        type: 'location_update',
+        data: { deviceId, location, timestamp, zones }
+      });
+
+      res.json({ success: true, zones });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to process location update' });
+    }
+  });
+
+  app.post('/api/device-status', async (req, res) => {
+    try {
+      const { deviceId, status, timestamp, permissions } = req.body;
+      
+      await storage.createActivity({
+        userId: req.user.id,
+        activityType: 'device_status',
+        description: `Device status update from ${deviceId}`,
+        metadata: { deviceId, status, permissions }
+      });
+
+      broadcast({
+        type: 'device_status_update',
+        data: { deviceId, status, timestamp }
+      });
+
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to process device status' });
+    }
+  });
+
+  app.post('/api/emergency-alert', async (req, res) => {
+    try {
+      const { deviceId, alertType, location, timestamp } = req.body;
+      
+      // Create emergency event
+      await storage.createEmergencyEvent({
+        userId: req.user.id,
+        eventType: alertType,
+        description: `Emergency alert from device ${deviceId}`,
+        location: location ? JSON.stringify(location) : null,
+        resolved: false
+      });
+
+      await storage.createActivity({
+        userId: req.user.id,
+        activityType: 'emergency_alert',
+        description: `Emergency alert received from device ${deviceId}`,
+        metadata: { deviceId, alertType, location }
+      });
+
+      // Broadcast emergency alert to all connected clients
+      broadcast({
+        type: 'emergency_alert',
+        data: { deviceId, alertType, location, timestamp },
+        priority: 'high'
+      });
+
+      res.json({ success: true, message: 'Emergency alert processed' });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to process emergency alert' });
+    }
+  });
+
+  app.post('/api/mobile-permissions', async (req, res) => {
+    try {
+      const { deviceId, permissions } = req.body;
+      
+      await storage.createActivity({
+        userId: req.user.id,
+        activityType: 'permission_update',
+        description: `Permission update from device ${deviceId}`,
+        metadata: { deviceId, permissions }
+      });
+
+      broadcast({
+        type: 'permissions_updated',
+        data: { deviceId, permissions }
+      });
+
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to update permissions' });
+    }
+  });
+
+  app.post('/api/voice-stress-alert', async (req, res) => {
+    try {
+      const { deviceId, stressLevel, voicePattern, timestamp } = req.body;
+      
+      // Create bullying detection alert if stress level is high
+      if (stressLevel > 7) {
+        await storage.createActivity({
+          userId: req.user.id,
+          activityType: 'bullying_detection',
+          description: `High voice stress detected on device ${deviceId}`,
+          metadata: { deviceId, stressLevel, voicePattern }
+        });
+
+        broadcast({
+          type: 'voice_stress_alert',
+          data: { deviceId, stressLevel, timestamp },
+          priority: 'high'
+        });
+      }
+
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to process voice stress alert' });
+    }
+  });
+
+  app.get('/api/mobile-app', (req, res) => {
+    // Serve mobile app for web testing
+    res.send(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <title>AGI Family Guardian Mobile</title>
+          <script src="/mobile/permissions.js"></script>
+          <style>
+            body { margin: 0; font-family: Arial, sans-serif; }
+            .mobile-app { max-width: 400px; margin: 0 auto; }
+          </style>
+        </head>
+        <body>
+          <div id="mobile-app" class="mobile-app">
+            <iframe src="/mobile-demo" width="100%" height="800" frameborder="0"></iframe>
+          </div>
+          <script>
+            // Initialize device permissions manager
+            const permissionsManager = new DevicePermissionsManager();
+            permissionsManager.initialize();
+            
+            // Make available globally for testing
+            window.permissionsManager = permissionsManager;
+          </script>
+        </body>
+      </html>
+    `);
+  });
+
+  // Serve mobile permissions file
+  app.get('/mobile/permissions.js', (req, res) => {
+    res.setHeader('Content-Type', 'application/javascript');
+    res.sendFile(path.join(__dirname, '../mobile/permissions.js'));
+  });
+
+  // Serve mobile demo page
+  app.get('/mobile-demo', (req, res) => {
+    res.redirect('/#/mobile-demo');
+  });
+
+  // Helper function to check geofences
+  async function checkGeofences(location) {
+    const safeZones = [
+      { id: 1, name: "Home Safe Zone", type: "safe", latitude: 40.7589, longitude: -73.9851, radius: 200 },
+      { id: 2, name: "School Safe Zone", type: "safe", latitude: 40.7614, longitude: -73.9776, radius: 150 }
+    ];
+    
+    const dangerZones = [
+      { id: 3, name: "Construction Site", type: "danger", latitude: 40.7648, longitude: -73.9808, radius: 300 }
+    ];
+    
+    const enteredZones = [];
+    
+    [...safeZones, ...dangerZones].forEach(zone => {
+      const distance = calculateDistance(
+        location.latitude, location.longitude,
+        zone.latitude, zone.longitude
+      );
+      
+      if (distance <= zone.radius) {
+        enteredZones.push(zone);
+        
+        // Send alert for danger zones
+        if (zone.type === 'danger') {
+          broadcast({
+            type: 'danger_zone_alert',
+            data: { zone, location, distance },
+            priority: 'high'
+          });
+        }
+      }
+    });
+    
+    return enteredZones;
+  }
+
+  // Helper function to calculate distance between two points
+  function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371e3; // Earth's radius in meters
+    const φ1 = lat1 * Math.PI/180;
+    const φ2 = lat2 * Math.PI/180;
+    const Δφ = (lat2-lat1) * Math.PI/180;
+    const Δλ = (lon2-lon1) * Math.PI/180;
+
+    const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+              Math.cos(φ1) * Math.cos(φ2) *
+              Math.sin(Δλ/2) * Math.sin(Δλ/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+    return R * c;
+  }
+
   app.get('/api/emergency-events', async (req, res) => {
     try {
       const events = await storage.getEmergencyEvents(req.user.id);

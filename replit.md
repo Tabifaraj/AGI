@@ -106,6 +106,15 @@ This is a full-stack family safety and parental control application built with R
 
 ```
 Changelog:
+- July 2, 2025. Added native mobile app development with device permissions
+  - Created React Native mobile app structure with native permission handling
+  - Implemented real device permission requests (location, camera, microphone, contacts)
+  - Added background location tracking with geofencing alerts
+  - Built voice stress monitoring for bullying detection
+  - Created remote device control system (lock/unlock, permissions, emergency mode)
+  - Added mobile app integration page to web interface
+  - Integrated WebSocket communication between mobile app and parent control system
+  - Added backend APIs for mobile device management and real-time updates
 - July 1, 2025. Added PostgreSQL database integration
   - Migrated from in-memory storage to persistent database
   - Created database schema with Drizzle ORM

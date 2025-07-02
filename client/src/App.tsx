@@ -11,6 +11,8 @@ import Settings from "@/pages/settings";
 import MapTracking from "@/pages/map-tracking";
 import SchoolMode from "@/pages/school-mode";
 import BullyingDetection from "@/pages/bullying-detection";
+import MobileIntegration from "@/pages/mobile-integration";
+import MobileDemo from "@/pages/mobile-demo";
 import NotFound from "@/pages/not-found";
 import { useEffect } from "react";
 
@@ -24,6 +26,8 @@ function Router() {
       <Route path="/map-tracking" component={MapTracking} />
       <Route path="/school-mode" component={SchoolMode} />
       <Route path="/bullying-detection" component={BullyingDetection} />
+      <Route path="/mobile-integration" component={MobileIntegration} />
+      <Route path="/mobile-demo" component={MobileDemo} />
       <Route component={NotFound} />
     </Switch>
   );
