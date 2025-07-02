@@ -284,73 +284,75 @@ export default function MobileDemo() {
           <h2 className="text-base font-semibold mb-3">Emergency Control Center</h2>
           
           {/* Smart Devices Section */}
-          <div className="mb-4">
+          <div className="mb-4 w-full">
             <h3 className="text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Smart Devices</h3>
-            <div className="space-y-2">
+            <div className="w-full bg-gray-50 dark:bg-gray-800/50 rounded-lg p-3 space-y-2">
               {Object.entries(permissions).map(([key, value]) => (
-                <div key={key} className="flex items-center justify-between">
-                  <div className="flex items-center space-x-1.5 flex-1 min-w-0">
+                <div key={key} className="flex items-center justify-between w-full">
+                  <div className="flex items-center space-x-2 flex-1 min-w-0 max-w-[70%]">
                     {key === 'location' && <MapPin className="h-3.5 w-3.5 text-blue-600 flex-shrink-0" />}
                     {key === 'camera' && <Camera className="h-3.5 w-3.5 text-green-600 flex-shrink-0" />}
                     {key === 'microphone' && <Mic className="h-3.5 w-3.5 text-red-600 flex-shrink-0" />}
                     {key === 'contacts' && <Contact className="h-3.5 w-3.5 text-purple-600 flex-shrink-0" />}
                     {key === 'notifications' && <Bell className="h-3.5 w-3.5 text-yellow-600 flex-shrink-0" />}
                     {key === 'biometric' && <AlertTriangle className="h-3.5 w-3.5 text-indigo-600 flex-shrink-0" />}
-                    <span className="text-xs font-medium capitalize truncate">{key}</span>
+                    <span className="text-xs font-medium capitalize break-words">{key}</span>
                   </div>
-                  {value ? (
-                    <Badge variant="default" className="text-xs flex-shrink-0 ml-2">ON</Badge>
-                  ) : (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => requestPermission(key as keyof DevicePermissions)}
-                      className="text-xs px-2 py-1 h-auto flex-shrink-0 ml-2"
-                    >
-                      Enable
-                    </Button>
-                  )}
+                  <div className="flex-shrink-0 ml-2">
+                    {value ? (
+                      <Badge variant="default" className="text-xs">ON</Badge>
+                    ) : (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => requestPermission(key as keyof DevicePermissions)}
+                        className="text-xs px-2 py-1 h-auto"
+                      >
+                        Enable
+                      </Button>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
           </div>
 
           {/* AI Detection Section */}
-          <div className="mb-4">
+          <div className="mb-4 w-full">
             <h3 className="text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">AI Detection</h3>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between p-2 bg-red-50 dark:bg-red-900/20 rounded-lg">
-                <div className="flex items-center space-x-2 flex-1 min-w-0">
+            <div className="w-full bg-gray-50 dark:bg-gray-800/50 rounded-lg p-3 space-y-2">
+              <div className="flex items-center justify-between w-full p-2 bg-red-50 dark:bg-red-900/20 rounded-lg">
+                <div className="flex items-center space-x-2 flex-1 min-w-0 max-w-[65%]">
                   <Heart className="h-3 w-3 text-red-500 flex-shrink-0" />
-                  <span className="text-xs truncate">Heart Rate</span>
+                  <span className="text-xs break-words">Heart Rate</span>
                 </div>
-                <span className="text-xs font-medium ml-2 flex-shrink-0">{monitoringData.heartRate} BPM</span>
+                <span className="text-xs font-medium flex-shrink-0 ml-2">{monitoringData.heartRate} BPM</span>
               </div>
 
-              <div className="flex items-center justify-between p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
-                <div className="flex items-center space-x-2 flex-1 min-w-0">
+              <div className="flex items-center justify-between w-full p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+                <div className="flex items-center space-x-2 flex-1 min-w-0 max-w-[65%]">
                   <AlertTriangle className="h-3 w-3 text-yellow-500 flex-shrink-0" />
-                  <span className="text-xs truncate">Stress Level</span>
+                  <span className="text-xs break-words">Stress Level</span>
                 </div>
-                <span className={`text-xs font-medium ml-2 flex-shrink-0 ${getStressColor(monitoringData.stressLevel)}`}>
+                <span className={`text-xs font-medium flex-shrink-0 ml-2 ${getStressColor(monitoringData.stressLevel)}`}>
                   {monitoringData.stressLevel}/10
                 </span>
               </div>
 
-              <div className="flex items-center justify-between p-2 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                <div className="flex items-center space-x-2 flex-1 min-w-0">
+              <div className="flex items-center justify-between w-full p-2 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                <div className="flex items-center space-x-2 flex-1 min-w-0 max-w-[65%]">
                   <Mic className="h-3 w-3 text-green-500 flex-shrink-0" />
-                  <span className="text-xs truncate">Voice Pattern</span>
+                  <span className="text-xs break-words">Voice Pattern</span>
                 </div>
-                <span className="text-xs font-medium ml-2 flex-shrink-0 capitalize">{monitoringData.voicePattern}</span>
+                <span className="text-xs font-medium flex-shrink-0 ml-2 capitalize break-words">{monitoringData.voicePattern}</span>
               </div>
 
-              <div className="flex items-center justify-between p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                <div className="flex items-center space-x-2 flex-1 min-w-0">
+              <div className="flex items-center justify-between w-full p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                <div className="flex items-center space-x-2 flex-1 min-w-0 max-w-[65%]">
                   <Contact className="h-3 w-3 text-blue-500 flex-shrink-0" />
-                  <span className="text-xs truncate">Social Score</span>
+                  <span className="text-xs break-words">Social Score</span>
                 </div>
-                <span className="text-xs font-medium ml-2 flex-shrink-0">{monitoringData.socialScore}/10</span>
+                <span className="text-xs font-medium flex-shrink-0 ml-2">{monitoringData.socialScore}/10</span>
               </div>
             </div>
           </div>
