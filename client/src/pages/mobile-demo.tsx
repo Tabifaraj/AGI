@@ -294,111 +294,96 @@ export default function MobileDemo() {
             </Badge>
           </div>
           
-          {/* Tab Navigation - Matching your design exactly */}
-          <div className="flex space-x-0 mb-4 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
-            <button
+          {/* Tab Navigation */}
+          <div className="flex space-x-1 mb-4">
+            <Button
+              size="sm"
+              variant={activeTab === 'devices' ? 'default' : 'outline'}
               onClick={() => setActiveTab('devices')}
-              className={`flex items-center space-x-1 text-xs px-3 py-2 rounded-md flex-1 justify-center transition-all ${
-                activeTab === 'devices' 
-                ? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm' 
-                : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
-              }`}
+              className="flex items-center space-x-1 text-xs px-2 py-1"
             >
               <Smartphone className="h-3 w-3" />
               <span>Smart Devices</span>
-            </button>
-            <button
+            </Button>
+            <Button
+              size="sm"
+              variant={activeTab === 'ai' ? 'default' : 'outline'}
               onClick={() => setActiveTab('ai')}
-              className={`flex items-center space-x-1 text-xs px-3 py-2 rounded-md flex-1 justify-center transition-all ${
-                activeTab === 'ai' 
-                ? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm' 
-                : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
-              }`}
+              className="flex items-center space-x-1 text-xs px-2 py-1"
             >
               <Heart className="h-3 w-3" />
               <span>AI Detection</span>
-            </button>
-            <button
+            </Button>
+            <Button
+              size="sm"
+              variant={activeTab === 'location' ? 'default' : 'outline'}
               onClick={() => setActiveTab('location')}
-              className={`flex items-center space-x-1 text-xs px-3 py-2 rounded-md flex-1 justify-center transition-all ${
-                activeTab === 'location' 
-                ? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm' 
-                : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
-              }`}
+              className="flex items-center space-x-1 text-xs px-2 py-1"
             >
               <MapPin className="h-3 w-3" />
-              <span className="text-xs">What can I put here</span>
-            </button>
-            <button
+              <span>Location</span>
+            </Button>
+            <Button
+              size="sm"
+              variant={activeTab === 'communication' ? 'default' : 'outline'}
               onClick={() => setActiveTab('communication')}
-              className={`flex items-center space-x-1 text-xs px-3 py-2 rounded-md flex-1 justify-center transition-all ${
-                activeTab === 'communication' 
-                ? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm' 
-                : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
-              }`}
+              className="flex items-center space-x-1 text-xs px-2 py-1"
             >
               <Contact className="h-3 w-3" />
-              <span className="text-xs">What can I put here</span>
-            </button>
-            <button
+              <span>Communication</span>
+            </Button>
+            <Button
+              size="sm"
+              variant={activeTab === 'screen' ? 'default' : 'outline'}
               onClick={() => setActiveTab('screen')}
-              className={`flex items-center space-x-1 text-xs px-3 py-2 rounded-md flex-1 justify-center transition-all ${
-                activeTab === 'screen' 
-                ? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm' 
-                : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
-              }`}
+              className="flex items-center space-x-1 text-xs px-2 py-1"
             >
               <Eye className="h-3 w-3" />
-              <span className="text-xs">What can I put here</span>
-            </button>
+              <span>Screen Time</span>
+            </Button>
           </div>
 
           {/* Tab Content */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700 mb-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700 mb-4">
             {activeTab === 'devices' && (
               <div>
-                <div className="space-y-4">
-                  {/* Emma's Row */}
+                <div className="flex items-center space-x-2 mb-3">
+                  <Smartphone className="h-4 w-4 text-blue-600" />
+                  <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">Smart Devices</h3>
+                </div>
+                
+                <div className="space-y-3">
                   <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 rounded-full overflow-hidden">
-                      <img 
-                        src="data:image/svg+xml,%3Csvg width='48' height='48' viewBox='0 0 48 48' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='24' cy='24' r='24' fill='%23FEF3C7'/%3E%3Ccircle cx='24' cy='18' r='6' fill='%23D97706'/%3E%3Cpath d='M12 36c0-6.627 5.373-12 12-12s12 5.373 12 12' fill='%23D97706'/%3E%3C/svg%3E" 
-                        alt="Emma" 
-                        className="w-full h-full object-cover"
-                      />
+                    <div className="w-8 h-8 rounded-full bg-pink-100 flex items-center justify-center">
+                      <span className="text-lg">👧</span>
                     </div>
                     <div className="flex-1">
-                      <div className="flex items-center justify-between text-sm mb-1">
-                        <span className="text-gray-700 dark:text-gray-300 font-medium">📱 Emma's iPhone -</span>
-                        <span className="text-green-600 font-bold">ONLINE</span>
+                      <div className="flex items-center justify-between text-xs mb-1">
+                        <span className="text-gray-600 dark:text-gray-400">📱 Emma's iPhone</span>
+                        <span className="text-green-600 font-medium">ONLINE</span>
                       </div>
-                      <div className="flex items-center justify-between text-sm">
+                      <div className="flex items-center justify-between text-xs">
                         <span className="text-gray-600 dark:text-gray-400">⌚ Emma's Apple Watch - Heart rate:</span>
-                        <div className="flex items-center space-x-2">
-                          <Badge className="bg-green-100 text-green-800 text-xs font-semibold">78 BPM</Badge>
-                          <Badge className="bg-green-100 text-green-800 text-xs font-semibold">Good</Badge>
+                        <div className="flex items-center space-x-1">
+                          <Badge className="bg-green-100 text-green-800 text-xs">78 BPM</Badge>
+                          <Badge className="bg-green-100 text-green-800 text-xs">Good</Badge>
                         </div>
                       </div>
                     </div>
                   </div>
-
-                  {/* Alex's Row */}
+                  
                   <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 rounded-full overflow-hidden">
-                      <img 
-                        src="data:image/svg+xml,%3Csvg width='48' height='48' viewBox='0 0 48 48' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='24' cy='24' r='24' fill='%23DBEAFE'/%3E%3Ccircle cx='24' cy='18' r='6' fill='%231D4ED8'/%3E%3Cpath d='M12 36c0-6.627 5.373-12 12-12s12 5.373 12 12' fill='%231D4ED8'/%3E%3C/svg%3E" 
-                        alt="Alex" 
-                        className="w-full h-full object-cover"
-                      />
+                    <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                      <span className="text-lg">👦</span>
                     </div>
                     <div className="flex-1">
-                      <div className="flex items-center justify-between text-sm mb-1">
-                        <span className="text-gray-700 dark:text-gray-300 font-medium">💻 Alex's MacBook -</span>
-                        <span className="text-green-600 font-bold">Online</span>
+                      <div className="flex items-center justify-between text-xs mb-1">
+                        <span className="text-gray-600 dark:text-gray-400">💻 Alex's MacBook</span>
+                        <span className="text-green-600 font-medium">Online</span>
                       </div>
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-gray-600 dark:text-gray-400">📱 Parent Phone -</span>
-                        <span className="text-green-600 font-bold">Online</span>
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-gray-600 dark:text-gray-400">📱 Parent Phone</span>
+                        <span className="text-green-600 font-medium">Online</span>
                       </div>
                     </div>
                   </div>
@@ -408,103 +393,53 @@ export default function MobileDemo() {
 
             {activeTab === 'ai' && (
               <div>
-                <div className="space-y-4">
-                  {/* Emma's AI Monitoring */}
-                  <div className="flex items-start space-x-3">
-                    <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
-                      <img 
-                        src="data:image/svg+xml,%3Csvg width='48' height='48' viewBox='0 0 48 48' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='24' cy='24' r='24' fill='%23FEF3C7'/%3E%3Ccircle cx='24' cy='18' r='6' fill='%23D97706'/%3E%3Cpath d='M12 36c0-6.627 5.373-12 12-12s12 5.373 12 12' fill='%23D97706'/%3E%3C/svg%3E" 
-                        alt="Emma" 
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="flex-1 space-y-1">
-                      <div className="flex items-center space-x-2 text-sm">
-                        <Mic className="h-3 w-3 text-green-500" />
-                        <span className="text-gray-700 dark:text-gray-300">Voice monitoring: Active</span>
+                <div className="flex items-center space-x-2 mb-3">
+                  <Heart className="h-4 w-4 text-red-500" />
+                  <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">AI Detection</h3>
+                </div>
+                
+                <div className="space-y-3">
+                  {[
+                    { name: 'Emma', avatar: '👧', color: 'pink' },
+                    { name: 'Alex', avatar: '👦', color: 'blue' },
+                    { name: 'Mom', avatar: '👩', color: 'purple' }
+                  ].map((person, index) => (
+                    <div key={person.name} className="flex items-center space-x-3">
+                      <div className={`w-8 h-8 rounded-full bg-${person.color}-100 flex items-center justify-center`}>
+                        <span className="text-lg">{person.avatar}</span>
                       </div>
-                      <div className="flex items-center space-x-2 text-sm">
-                        <Eye className="h-3 w-3 text-purple-500" />
-                        <span className="text-gray-700 dark:text-gray-300">AI threat detection: Online</span>
-                      </div>
-                      <div className="flex items-center space-x-2 text-sm">
-                        <Heart className="h-3 w-3 text-red-500" />
-                        <span className="text-gray-700 dark:text-gray-300">Biometric alerts: Enabled</span>
-                      </div>
-                      <div className="flex items-center space-x-2 text-sm">
-                        <MapPin className="h-3 w-3 text-blue-500" />
-                        <span className="text-gray-700 dark:text-gray-300">Location tracking: Active</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Red progress bar for Emma */}
-                  <div className="w-full bg-gray-200 rounded-full h-1 mb-4">
-                    <div className="bg-red-500 h-1 rounded-full" style={{width: '85%'}}></div>
-                  </div>
-
-                  {/* Alex's AI Monitoring */}
-                  <div className="flex items-start space-x-3">
-                    <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
-                      <img 
-                        src="data:image/svg+xml,%3Csvg width='48' height='48' viewBox='0 0 48 48' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='24' cy='24' r='24' fill='%23DBEAFE'/%3E%3Ccircle cx='24' cy='18' r='6' fill='%231D4ED8'/%3E%3Cpath d='M12 36c0-6.627 5.373-12 12-12s12 5.373 12 12' fill='%231D4ED8'/%3E%3C/svg%3E" 
-                        alt="Alex" 
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="flex-1 space-y-1">
-                      <div className="flex items-center space-x-2 text-sm">
-                        <Mic className="h-3 w-3 text-green-500" />
-                        <span className="text-gray-700 dark:text-gray-300">Voice monitoring: Active</span>
-                      </div>
-                      <div className="flex items-center space-x-2 text-sm">
-                        <Eye className="h-3 w-3 text-purple-500" />
-                        <span className="text-gray-700 dark:text-gray-300">AI threat detection: Online</span>
-                      </div>
-                      <div className="flex items-center space-x-2 text-sm">
-                        <Heart className="h-3 w-3 text-red-500" />
-                        <span className="text-gray-700 dark:text-gray-300">Biometric alerts: Enabled</span>
-                      </div>
-                      <div className="flex items-center space-x-2 text-sm">
-                        <MapPin className="h-3 w-3 text-blue-500" />
-                        <span className="text-gray-700 dark:text-gray-300">Location tracking: Active</span>
+                      <div className="flex-1 space-y-1">
+                        <div className="flex items-center justify-between text-xs">
+                          <div className="flex items-center space-x-1">
+                            <Mic className="h-3 w-3 text-green-500" />
+                            <span className="text-gray-600 dark:text-gray-400">Voice monitoring:</span>
+                          </div>
+                          <span className="text-green-600 font-medium">Active</span>
+                        </div>
+                        <div className="flex items-center justify-between text-xs">
+                          <div className="flex items-center space-x-1">
+                            <Eye className="h-3 w-3 text-purple-500" />
+                            <span className="text-gray-600 dark:text-gray-400">AI threat detection:</span>
+                          </div>
+                          <span className="text-green-600 font-medium">Online</span>
+                        </div>
+                        <div className="flex items-center justify-between text-xs">
+                          <div className="flex items-center space-x-1">
+                            <Heart className="h-3 w-3 text-red-500" />
+                            <span className="text-gray-600 dark:text-gray-400">Biometric alerts:</span>
+                          </div>
+                          <span className="text-green-600 font-medium">Enabled</span>
+                        </div>
+                        <div className="flex items-center justify-between text-xs">
+                          <div className="flex items-center space-x-1">
+                            <MapPin className="h-3 w-3 text-blue-500" />
+                            <span className="text-gray-600 dark:text-gray-400">Location tracking:</span>
+                          </div>
+                          <span className="text-green-600 font-medium">Active</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-
-                  {/* Red progress bar for Alex */}
-                  <div className="w-full bg-gray-200 rounded-full h-1 mb-4">
-                    <div className="bg-red-500 h-1 rounded-full" style={{width: '75%'}}></div>
-                  </div>
-
-                  {/* Mom's AI Monitoring */}
-                  <div className="flex items-start space-x-3">
-                    <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
-                      <img 
-                        src="data:image/svg+xml,%3Csvg width='48' height='48' viewBox='0 0 48 48' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='24' cy='24' r='24' fill='%23F3E8FF'/%3E%3Ccircle cx='24' cy='18' r='6' fill='%237C3AED'/%3E%3Cpath d='M12 36c0-6.627 5.373-12 12-12s12 5.373 12 12' fill='%237C3AED'/%3E%3C/svg%3E" 
-                        alt="Mom" 
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="flex-1 space-y-1">
-                      <div className="flex items-center space-x-2 text-sm">
-                        <Mic className="h-3 w-3 text-green-500" />
-                        <span className="text-gray-700 dark:text-gray-300">Voice monitoring: Active</span>
-                      </div>
-                      <div className="flex items-center space-x-2 text-sm">
-                        <Eye className="h-3 w-3 text-purple-500" />
-                        <span className="text-gray-700 dark:text-gray-300">AI threat detection: Online</span>
-                      </div>
-                      <div className="flex items-center space-x-2 text-sm">
-                        <Heart className="h-3 w-3 text-red-500" />
-                        <span className="text-gray-700 dark:text-gray-300">Biometric alerts: Enabled</span>
-                      </div>
-                      <div className="flex items-center space-x-2 text-sm">
-                        <MapPin className="h-3 w-3 text-blue-500" />
-                        <span className="text-gray-700 dark:text-gray-300">Location tracking: Active</span>
-                      </div>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
             )}
