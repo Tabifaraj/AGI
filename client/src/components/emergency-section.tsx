@@ -1,209 +1,268 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { HeartPulse, Smartphone, Laptop, Phone, Mic, ShieldAlert, MapPin, AlertTriangle, Lock } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { AlertTriangle, Lock, Shield, Unlock, Heart, Watch, Smartphone, Camera, Mic } from "lucide-react";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export default function EmergencySection() {
   const { toast } = useToast();
-  const [emergencyActive, setEmergencyActive] = useState(false);
+  const queryClient = useQueryClient();
+  const [emergencyStatus, setEmergencyStatus] = useState({
+    isActive: false,
+    activatedBy: null as string | null,
+    activatedAt: null as Date | null,
+    reason: null as string | null
+  });
 
-  const devices = [
-    { name: "Emma's iPhone", status: "ONLINE", icon: <Smartphone className="h-4 w-4 text-blue-500" /> },
-    { name: "Emma's Apple Watch", status: "78.89 BPM", health: "Good", icon: <HeartPulse className="h-4 w-4 text-green-500" /> },
-    { name: "Alex's MacBook", status: "Online", icon: <Laptop className="h-4 w-4 text-purple-500" /> },
-    { name: "Parent Phone", status: "Online", icon: <Phone className="h-4 w-4 text-orange-500" /> }
-  ];
+  // Query for active emergency events
+  const { data: activeEmergencies } = useQuery({
+    queryKey: ['/api/emergency/active'],
+    refetchInterval: 5000 // Check every 5 seconds
+  });
 
-  const detections = [
-    { name: "Voice monitoring", status: "Active", icon: <Mic className="h-4 w-4 text-pink-500" /> },
-    { name: "AI threat detection", status: "Online", icon: <ShieldAlert className="h-4 w-4 text-red-500" /> },
-    { name: "Biometric alerts", status: "Enabled", icon: <HeartPulse className="h-4 w-4 text-green-500" /> },
-    { name: "Location tracking", status: "Active", icon: <MapPin className="h-4 w-4 text-blue-500" /> }
-  ];
-
-  const handleEmergencyLock = () => {
-    setEmergencyActive(true);
-    toast({
-      title: "Emergency Lock Activated",
-      description: "All devices locked and emergency protocols initiated",
-      variant: "destructive",
-    });
-  };
-
-  const handleUnlock = () => {
-    setEmergencyActive(false);
-    toast({
-      title: "Emergency Lock Disabled",
-      description: "All devices unlocked and normal operations resumed",
-    });
-  };
-
-  const handleShareLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          toast({
-            title: "Location Shared",
-            description: `Latitude: ${latitude.toFixed(6)}, Longitude: ${longitude.toFixed(6)}`,
-            variant: "default",
-          });
-          console.log(`Location: ${latitude}, ${longitude}`);
-        },
-        (error) => {
-          toast({
-            title: "Location Error",
-            description: `Unable to get location: ${error.message}`,
-            variant: "destructive",
-          });
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 60000
-        }
-      );
-    } else {
-      toast({
-        title: "Location Not Supported",
-        description: "Geolocation is not supported by this browser",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleEmergencyAlert = () => {
-    const phoneNumber = "+9613136910";
-
-    // Try to initiate a phone call
-    if (navigator.userAgent.includes('Mobile') || navigator.userAgent.includes('Android') || navigator.userAgent.includes('iPhone')) {
-      // For mobile devices, use tel: protocol
-      window.location.href = `tel:${phoneNumber}`;
-    } else {
-      // For desktop, try to open a calling app or show instructions
-      toast({
-        title: "Emergency Alert",
-        description: `Calling ${phoneNumber}. If no call is initiated, please dial manually.`,
-        variant: "destructive",
-      });
-
-      // Try to open calling apps
-      const callLinks = [
-        `tel:${phoneNumber}`,
-        `skype:${phoneNumber}?call`,
-        `facetime:${phoneNumber}`,
-        `whatsapp://send?phone=${phoneNumber.replace('+', '')}`
-      ];
-
-      // Try the first available method
-      try {
-        window.open(callLinks[0], '_blank');
-      } catch (error) {
-        console.log('Could not initiate call automatically');
+  // Simulate smart device monitoring
+  useEffect(() => {
+    const checkBiometrics = async () => {
+      // Simulate smartwatch heart rate monitoring
+      const heartRate = Math.floor(Math.random() * 40) + 60; // 60-100 BPM
+      
+      if (heartRate > 95) {
+        toast({
+          title: "Elevated Heart Rate Detected",
+          description: `Emma's heart rate: ${heartRate} BPM - Monitoring for emergency`,
+          variant: "destructive",
+        });
       }
-    }
+    };
 
-    toast({
-      title: "Emergency Alert Activated",
-      description: `Initiating call to ${phoneNumber}`,
-      variant: "destructive",
-    });
-  };
+    const interval = setInterval(checkBiometrics, 30000); // Check every 30 seconds
+    return () => clearInterval(interval);
+  }, [toast]);
+
+  const emergencyLockMutation = useMutation({
+    mutationFn: () => apiRequest('POST', '/api/emergency/lock-all'),
+    onSuccess: () => {
+      setEmergencyStatus({
+        isActive: true,
+        activatedBy: 'Parent' as string,
+        activatedAt: new Date() as Date,
+        reason: 'Manual activation' as string
+      });
+      toast({
+        title: "Emergency Protocol Activated",
+        description: "All devices locked, GPS tracking enabled, emergency contacts notified.",
+        variant: "destructive",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/emergency-events'] });
+    }
+  });
+
+  const unlockAllMutation = useMutation({
+    mutationFn: () => apiRequest('POST', '/api/emergency/unlock-all'),
+    onSuccess: () => {
+      setEmergencyStatus({
+        isActive: false,
+        activatedBy: null,
+        activatedAt: null,
+        reason: null
+      });
+      toast({
+        title: "Emergency Lock Disabled",
+        description: "All devices unlocked. Emergency monitoring continues.",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/emergency-events'] });
+    }
+  });
+
+  const emergencyOverrideMutation = useMutation({
+    mutationFn: () => apiRequest('POST', '/api/emergency/parent-override'),
+    onSuccess: () => {
+      toast({
+        title: "Parent Override Activated",
+        description: "Emergency protocols disabled. Full control restored.",
+      });
+    }
+  });
 
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-xl p-4 border border-gray-200 dark:border-gray-700 shadow-sm">
+    <div className="bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-900/20 dark:to-pink-900/20 rounded-xl p-6 border border-red-200 dark:border-red-800">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-semibold text-lg flex items-center">
-          <AlertTriangle className="h-5 w-5 text-red-500 mr-2" />
-          Emergency Control Center
-        </h3>
-        <div className={`px-3 py-1 rounded-full text-xs flex items-center ${emergencyActive ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200' : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200'}`}>
-          <ShieldAlert className="h-3 w-3 mr-1" />
-          {emergencyActive ? 'EMERGENCY ACTIVE' : 'Monitoring'}
+        <div className="flex items-center space-x-2">
+          <AlertTriangle className="h-5 w-5 text-alert-red" />
+          <h3 className="font-semibold text-red-800 dark:text-red-200">Emergency Control Center</h3>
+        </div>
+        <Badge variant={emergencyStatus.isActive ? "destructive" : "secondary"} className="text-xs">
+          <Shield className="h-3 w-3 mr-1" />
+          {emergencyStatus.isActive ? 'EMERGENCY ACTIVE' : 'Monitoring'}
+        </Badge>
+      </div>
+
+      {/* Smart Device Status */}
+      <div className="grid grid-cols-2 gap-3 mb-4">
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-3 border">
+          <div className="flex items-center space-x-2 mb-2">
+            <Watch className="h-4 w-4 text-blue-500" />
+            <span className="text-sm font-medium">Smart Devices</span>
+          </div>
+          <div className="space-y-1 text-xs text-gray-600 dark:text-gray-400">
+            <div>📱 Emma's iPhone - Online</div>
+            <div>⌚ Emma's Apple Watch - Heart rate: 78 BPM</div>
+            <div>💻 Alex's MacBook - Online</div>
+            <div>📱 Parent Phone - Online</div>
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-3 border">
+          <div className="flex items-center space-x-2 mb-2">
+            <Heart className="h-4 w-4 text-red-500" />
+            <span className="text-sm font-medium">AI Detection</span>
+          </div>
+          <div className="space-y-1 text-xs text-gray-600 dark:text-gray-400">
+            <div>🎤 Voice monitoring: Active</div>
+            <div>💓 Biometric alerts: Enabled</div>
+            <div>📍 Location tracking: Active</div>
+            <div>🤖 AI threat detection: Online</div>
+          </div>
         </div>
       </div>
 
-      <Tabs defaultValue="devices" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="devices" className="flex items-center space-x-2">
-            <Smartphone className="h-4 w-4" />
-            <span>Smart Devices</span>
-          </TabsTrigger>
-          <TabsTrigger value="detection" className="flex items-center space-x-2">
-            <ShieldAlert className="h-4 w-4" />
-            <span>AI Detection</span>
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="devices">
-          <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 mt-2">
-            {devices.map((device, index) => (
-              <div key={index} className="flex items-center justify-between py-2 border-b border-gray-200 dark:border-gray-700 last:border-0">
-                <div className="flex items-center space-x-3">
-                  {device.icon}
-                  <span className="text-sm font-medium">{device.name}</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  {device.health && (
-                    <span className={`text-xs px-2 py-1 rounded-full ${device.health === 'Good' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200'}`}>
-                      {device.health}
-                    </span>
-                  )}
-                  <span className="text-sm text-gray-600 dark:text-gray-300">{device.status}</span>
-                </div>
-              </div>
-            ))}
+      {emergencyStatus.isActive ? (
+        <div className="space-y-3">
+          <div className="bg-red-100 dark:bg-red-900/30 rounded-lg p-3 border border-red-300">
+            <div className="flex items-center space-x-2 mb-2">
+              <AlertTriangle className="h-4 w-4 text-red-600" />
+              <span className="font-semibold text-red-800 dark:text-red-200">EMERGENCY ACTIVE</span>
+            </div>
+            <div className="text-sm text-red-700 dark:text-red-300">
+              Activated by: {emergencyStatus.activatedBy}<br/>
+              Time: {emergencyStatus.activatedAt?.toLocaleTimeString()}<br/>
+              Reason: {emergencyStatus.reason}
+            </div>
+            <div className="mt-2 flex items-center space-x-2 text-xs text-red-600">
+              <Camera className="h-3 w-3" />
+              <span>Live monitoring active</span>
+              <Mic className="h-3 w-3 ml-2" />
+              <span>Audio recording</span>
+            </div>
           </div>
-        </TabsContent>
 
-        <TabsContent value="detection">
-          <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 mt-2">
-            {detections.map((detection, index) => (
-              <div key={index} className="flex items-center justify-between py-2 border-b border-gray-200 dark:border-gray-700 last:border-0">
-                <div className="flex items-center space-x-3">
-                  {detection.icon}
-                  <span className="text-sm font-medium">{detection.name}</span>
-                </div>
-                <span className="text-sm text-gray-600 dark:text-gray-300">{detection.status}</span>
-              </div>
-            ))}
+          <div className="flex space-x-2">
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="outline" className="flex-1">
+                  <Unlock className="h-4 w-4 mr-2" />
+                  Parent Override
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Parent Override Confirmation</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will immediately disable all emergency protocols and restore normal device operation. 
+                    Are you sure the emergency situation has been resolved?
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction 
+                    onClick={() => unlockAllMutation.mutate()}
+                    className="bg-green-600 hover:bg-green-700"
+                  >
+                    Disable Emergency Mode
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
-        </TabsContent>
-      </Tabs>
-
-      <div className="mt-4 space-y-3">
-        <Button 
-          onClick={emergencyActive ? handleUnlock : handleEmergencyLock}
-          className={`w-full ${emergencyActive ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'}`}
-        >
-          <Lock className="h-4 w-4 mr-2" />
-          {emergencyActive ? 'Unlock All Devices' : 'Emergency Lock All Devices'}
-        </Button>
-
-        <div className="grid grid-cols-2 gap-3">
-          <Button 
-            variant="outline" 
-            className="bg-blue-50 hover:bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 dark:text-blue-300"
-            onClick={handleShareLocation}
-          >
-            <MapPin className="h-4 w-4 mr-2" />
-            Share Location
-          </Button>
-          <Button 
-            variant="outline" 
-            className="bg-purple-50 hover:bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:hover:bg-purple-900/50 dark:text-purple-300"
-            onClick={handleEmergencyAlert}
-          >
-            <AlertTriangle className="h-4 w-4 mr-2" />
-            Emergency Alert
-          </Button>
         </div>
-      </div>
+      ) : (
+        <div className="space-y-3">
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button 
+                className="emergency-button w-full"
+                disabled={emergencyLockMutation.isPending}
+              >
+                <Lock className="h-4 w-4 mr-2" />
+                {emergencyLockMutation.isPending ? 'Activating Emergency Protocol...' : 'Emergency Lock All Devices'}
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle className="flex items-center space-x-2 text-red-600">
+                  <AlertTriangle className="h-5 w-5" />
+                  <span>Emergency Protocol Activation</span>
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  This will immediately:
+                  • Lock all family devices and prevent access
+                  • Activate GPS tracking and live location sharing
+                  • Begin real-time photo and audio monitoring
+                  • Send alerts to all emergency contacts
+                  • Create secure evidence trail for authorities
+                  
+                  Parent override will remain available. Continue?
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction 
+                  onClick={() => emergencyLockMutation.mutate()}
+                  className="bg-red-600 hover:bg-red-700"
+                >
+                  Activate Emergency Protocol
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
 
-      <div className="mt-4 text-xs text-gray-500 dark:text-gray-400">
-        <p>Demo Features: Native mobile app with real-time location tracking, voice stress monitoring, remote device control, and emergency response. In production, this would be a native iOS/Android app with full device permissions.</p>
-      </div>
+          <div className="grid grid-cols-2 gap-2 text-xs">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="text-orange-600"
+              onClick={() => {
+                toast({
+                  title: "Heart Rate Alert Triggered",
+                  description: "Simulating elevated heart rate (105 BPM) - Emergency protocols ready",
+                  variant: "destructive",
+                });
+              }}
+            >
+              <Heart className="h-3 w-3 mr-1" />
+              Test Heart Rate Alert
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="text-purple-600"
+              onClick={() => {
+                toast({
+                  title: "Voice Alert Detected",
+                  description: "AI detected distress keywords - 'Help me!' - Emergency protocols ready",
+                  variant: "destructive",
+                });
+              }}
+            >
+              <Mic className="h-3 w-3 mr-1" />
+              Test Voice Detection
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
