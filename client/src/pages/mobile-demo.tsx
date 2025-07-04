@@ -22,7 +22,7 @@ import {
   Eye
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-
+d
 interface DevicePermissions {
   location: boolean;
   camera: boolean;
