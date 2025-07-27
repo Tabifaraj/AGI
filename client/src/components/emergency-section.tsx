@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import AIChildAvatar from "./ai-child-avatar";
 import { 
   AlertTriangle, 
   Lock, 
@@ -265,7 +266,7 @@ export default function EmergencySection() {
     onSuccess: () => {
       setEmergencyStatus({
         isActive: true,
-        activatedBy: 'Parent' as string,
+        activatedBy: 'Guardian' as string,
         activatedAt: new Date() as Date,
         reason: 'Manual activation' as string
       });
@@ -299,7 +300,7 @@ export default function EmergencySection() {
     mutationFn: () => apiRequest('POST', '/api/emergency/parent-override'),
     onSuccess: () => {
       toast({
-        title: "Parent Override Activated",
+        title: "Guardian Override Activated",
         description: "Emergency protocols disabled. Full control restored.",
       });
     }
@@ -307,15 +308,21 @@ export default function EmergencySection() {
 
   return (
     <div className="bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-900/20 dark:to-pink-900/20 rounded-xl p-6 border border-red-200 dark:border-red-800">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-2">
           <AlertTriangle className="h-5 w-5 text-red-600" />
-          <h2 className="text-lg font-semibold text-red-800 dark:text-red-200">Emergency Control Center</h2>
+          <h2 className="text-lg font-semibold text-red-800 dark:text-red-200">Guardian Control Center</h2>
         </div>
         <Badge variant={emergencyStatus.isActive ? "destructive" : "secondary"} className="text-xs">
           <Shield className="h-3 w-3 mr-1" />
-          {emergencyStatus.isActive ? 'EMERGENCY ACTIVE' : 'Monitoring'}
+          {emergencyStatus.isActive ? 'EMERGENCY ACTIVE' : 'AI Monitoring Active'}
         </Badge>
+      </div>
+
+      {/* AI Child Avatars */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <AIChildAvatar childName="Emma" childAge={12} />
+        <AIChildAvatar childName="Alex" childAge={9} />
       </div>
       
       {/* Tab Navigation */}
@@ -606,12 +613,12 @@ export default function EmergencySection() {
               <AlertDialogTrigger asChild>
                 <Button variant="outline" className="flex-1">
                   <Unlock className="h-4 w-4 mr-2" />
-                  Parent Override
+                  Guardian Override
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Parent Override Confirmation</AlertDialogTitle>
+                  <AlertDialogTitle>Guardian Override Confirmation</AlertDialogTitle>
                   <AlertDialogDescription>
                     This will immediately disable all emergency protocols and restore normal device operation. 
                     Are you sure the emergency situation has been resolved?

@@ -348,7 +348,7 @@ class DevicePermissionsManager {
 
   // Lock device functionality
   lockDevice() {
-    console.log('Device locked by parent control');
+    console.log('Device locked by Guardian control');
     
     if (this.isNativeEnvironment()) {
       // Native device lock implementation
@@ -365,7 +365,7 @@ class DevicePermissionsManager {
 
   // Unlock device functionality
   unlockDevice() {
-    console.log('Device unlocked by parent override');
+    console.log('Device unlocked by Guardian override');
     
     if (this.isNativeEnvironment()) {
       // Native unlock implementation
@@ -384,7 +384,7 @@ class DevicePermissionsManager {
     // Force enable critical permissions
     this.requestLocationPermission();
     
-    // Send emergency alert to parent system
+    // Send emergency alert to Guardian system
     this.sendEmergencyAlert();
     
     // Enable all safety features
@@ -547,17 +547,17 @@ class DevicePermissionsManager {
       this.startVoiceStressMonitoring();
     }
     
-    // Connect to parent control system
-    this.connectToParentSystem();
+    // Connect to Guardian control system
+    this.connectToGuardianSystem();
   }
 
-  // Connect to parent control system via WebSocket
-  connectToParentSystem() {
+  // Connect to Guardian control system via WebSocket
+  connectToGuardianSystem() {
     if (typeof WebSocket !== 'undefined') {
       const ws = new WebSocket('ws://localhost:5000/ws');
       
       ws.onopen = () => {
-        console.log('Connected to parent control system');
+        console.log('Connected to Guardian control system');
         
         // Register device
         ws.send(JSON.stringify({
@@ -573,9 +573,9 @@ class DevicePermissionsManager {
       };
       
       ws.onclose = () => {
-        console.log('Disconnected from parent control system');
+        console.log('Disconnected from Guardian control system');
         // Attempt reconnection after 5 seconds
-        setTimeout(() => this.connectToParentSystem(), 5000);
+        setTimeout(() => this.connectToGuardianSystem(), 5000);
       };
     }
   }

@@ -171,7 +171,7 @@ export default function MobileDemo() {
         setDeviceStatus(prev => ({ ...prev, isLocked: true }));
         toast({
           title: "Device Locked",
-          description: "Device has been locked by parent control",
+          description: "Device has been locked by Guardian control",
           variant: "destructive",
         });
         break;
@@ -179,7 +179,7 @@ export default function MobileDemo() {
         setDeviceStatus(prev => ({ ...prev, isLocked: false }));
         toast({
           title: "Device Unlocked",
-          description: "Device unlocked by parent override",
+          description: "Device unlocked by Guardian override",
         });
         break;
       case 'emergency':
@@ -219,7 +219,7 @@ export default function MobileDemo() {
         <div className="flex items-center justify-between">
           <div className="flex-1 min-w-0">
             <h1 className="text-lg font-bold truncate">AGI Family Guardian</h1>
-            <p className="text-blue-100 text-xs truncate">Child Device Interface</p>
+            <p className="text-blue-100 text-xs truncate">Child Safety Interface</p>
           </div>
           <div className="flex items-center space-x-1.5 flex-shrink-0">
             <Signal className="h-3.5 w-3.5" />
@@ -354,7 +354,7 @@ export default function MobileDemo() {
 
         {/* Remote Commands Demo */}
         <div className="p-3">
-          <h2 className="text-base font-semibold mb-2">Parent Remote Commands</h2>
+          <h2 className="text-base font-semibold mb-2">Guardian Remote Commands</h2>
           
           <div className="grid grid-cols-2 gap-2">
             <Button

@@ -336,17 +336,17 @@ export default function App() {
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Parent Controls</Text>
-        <View style={styles.parentControls}>
-          <Text style={styles.permissionLabel}>Parent Mode</Text>
+        <Text style={styles.sectionTitle}>Guardian Controls</Text>
+        <View style={styles.guardianControls}>
+          <Text style={styles.permissionLabel}>Guardian Mode</Text>
           <Switch
             value={isParentMode}
             onValueChange={toggleParentMode}
           />
         </View>
         {isParentMode && (
-          <View style={styles.parentPanel}>
-            <Text style={styles.parentText}>Parent Override Active</Text>
+          <View style={styles.guardianPanel}>
+            <Text style={styles.guardianText}>Guardian Override Active</Text>
             <View style={styles.overrideButtons}>
               <TouchableOpacity 
                 style={styles.overrideButton} 
