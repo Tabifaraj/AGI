@@ -145,79 +145,79 @@ export default function FigmaEmergencyCenter() {
   };
 
   return (
-    <div className="bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-900/20 dark:to-pink-900/20 rounded-xl p-6 border border-red-200 dark:border-red-800">
+    <div className="bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-900/20 dark:to-pink-900/20 rounded-xl p-4 sm:p-6 lg:p-8 border border-red-200 dark:border-red-800 max-w-full overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center space-x-2">
-          <AlertTriangle className="h-5 w-5 text-red-600" />
-          <h2 className="text-lg font-semibold text-red-800 dark:text-red-200">Emergency Control Center</h2>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 space-y-4 sm:space-y-0">
+        <div className="flex items-center space-x-3">
+          <AlertTriangle className="h-6 w-6 text-red-600" />
+          <h2 className="text-xl lg:text-2xl font-semibold text-red-800 dark:text-red-200">Emergency Control Center</h2>
         </div>
-        <Badge variant="secondary" className="text-xs">
-          <Shield className="h-3 w-3 mr-1" />
+        <Badge variant="secondary" className="text-sm self-start sm:self-auto">
+          <Shield className="h-4 w-4 mr-2" />
           Monitoring
         </Badge>
       </div>
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-5 mb-6">
-          <TabsTrigger value="smart-devices" className="flex items-center space-x-1">
-            <Smartphone className="h-4 w-4" />
-            <span className="hidden sm:inline">Smart Devices</span>
+        <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5 mb-6 h-auto">
+          <TabsTrigger value="smart-devices" className="flex items-center justify-center space-x-2 p-3 text-sm">
+            <Smartphone className="h-5 w-5" />
+            <span>Smart Devices</span>
           </TabsTrigger>
-          <TabsTrigger value="ai-detection" className="flex items-center space-x-1">
-            <Heart className="h-4 w-4" />
-            <span className="hidden sm:inline">AI Detection</span>
+          <TabsTrigger value="ai-detection" className="flex items-center justify-center space-x-2 p-3 text-sm">
+            <Heart className="h-5 w-5" />
+            <span>AI Detection</span>
           </TabsTrigger>
-          <TabsTrigger value="what-can-i-put-here-1" className="text-xs">
+          <TabsTrigger value="what-can-i-put-here-1" className="text-xs p-2 hidden lg:flex">
             What can i put here
           </TabsTrigger>
-          <TabsTrigger value="what-can-i-put-here-2" className="text-xs">
+          <TabsTrigger value="what-can-i-put-here-2" className="text-xs p-2 hidden lg:flex">
             What can i put here
           </TabsTrigger>
-          <TabsTrigger value="what-can-i-put-here-3" className="text-xs">
+          <TabsTrigger value="what-can-i-put-here-3" className="text-xs p-2 hidden lg:flex">
             What can i put here
           </TabsTrigger>
         </TabsList>
 
         {/* Smart Devices Tab */}
-        <TabsContent value="smart-devices" className="space-y-4">
+        <TabsContent value="smart-devices" className="space-y-6">
           {childrenData.map(child => (
-            <div key={child.id} className="bg-white dark:bg-gray-800 rounded-lg p-4 space-y-3">
-              <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-lg">
+            <div key={child.id} className="bg-white dark:bg-gray-800 rounded-lg p-6 space-y-4">
+              <div className="flex items-center space-x-4">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-2xl">
                   {child.avatar}
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 dark:text-white">{child.name}'s Devices</h3>
-                  <p className="text-sm text-gray-500">All devices online</p>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{child.name}'s Devices</h3>
+                  <p className="text-base text-gray-500">All devices online</p>
                 </div>
               </div>
               
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {child.devices.map((device, index) => (
-                  <div key={index} className="flex items-center justify-between py-2 px-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <div className="flex items-center space-x-2">
-                        {device.type === 'iPhone' && <Smartphone className="h-4 w-4 text-gray-600" />}
-                        {device.type === 'MacBook' && <Laptop className="h-4 w-4 text-gray-600" />}
-                        {device.type === 'Apple Watch' && <Watch className="h-4 w-4 text-gray-600" />}
-                        {device.type === 'Parent Phone' && <Smartphone className="h-4 w-4 text-gray-600" />}
-                        <span className="text-sm font-medium text-gray-900 dark:text-white">{device.name}</span>
+                  <div key={index} className="flex flex-col lg:flex-row lg:items-center lg:justify-between py-4 px-4 bg-gray-50 dark:bg-gray-700 rounded-lg space-y-2 lg:space-y-0">
+                    <div className="flex items-center space-x-4">
+                      <div className="flex items-center space-x-3">
+                        {device.type === 'iPhone' && <Smartphone className="h-5 w-5 text-gray-600" />}
+                        {device.type === 'MacBook' && <Laptop className="h-5 w-5 text-gray-600" />}
+                        {device.type === 'Apple Watch' && <Watch className="h-5 w-5 text-gray-600" />}
+                        {device.type === 'Parent Phone' && <Smartphone className="h-5 w-5 text-gray-600" />}
+                        <span className="text-base font-medium text-gray-900 dark:text-white">{device.name}</span>
                       </div>
-                      <span className="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">
+                      <span className="text-sm px-3 py-1 bg-green-100 text-green-800 rounded-full">
                         {device.status}
                       </span>
                     </div>
                     
                     {device.heartRate && (
-                      <div className="flex items-center space-x-2">
-                        <Watch className="h-4 w-4 text-gray-500" />
-                        <span className="text-sm text-gray-600">Heart rate:</span>
-                        <span className={`text-sm font-bold px-2 py-1 rounded ${getHeartRateBadgeColor(device.heartRate)}`}>
+                      <div className="flex items-center space-x-3 flex-wrap">
+                        <Watch className="h-5 w-5 text-gray-500" />
+                        <span className="text-base text-gray-600">Heart rate:</span>
+                        <span className={`text-base font-bold px-3 py-1 rounded ${getHeartRateBadgeColor(device.heartRate)}`}>
                           {device.heartRate} BPM
                         </span>
-                        <span className={`text-sm font-medium ${getHeartRateColor(device.heartRate)}`}>
+                        <span className={`text-base font-medium ${getHeartRateColor(device.heartRate)}`}>
                           Good
                         </span>
                       </div>
@@ -230,18 +230,18 @@ export default function FigmaEmergencyCenter() {
         </TabsContent>
 
         {/* AI Detection Tab */}
-        <TabsContent value="ai-detection" className="space-y-4">
+        <TabsContent value="ai-detection" className="space-y-6">
           {childrenData.map(child => (
             <motion.div 
               key={child.id} 
-              className="bg-white dark:bg-gray-800 rounded-lg p-4"
+              className="bg-white dark:bg-gray-800 rounded-lg p-6"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <div className="flex items-center space-x-4 mb-4">
+              <div className="flex flex-col lg:flex-row lg:items-center space-y-4 lg:space-y-0 lg:space-x-6 mb-6">
                 <motion.div 
-                  className="w-16 h-16 rounded-full bg-gradient-to-br from-pink-400 to-purple-500 flex items-center justify-center text-white text-2xl"
+                  className="w-20 h-20 rounded-full bg-gradient-to-br from-pink-400 to-purple-500 flex items-center justify-center text-white text-3xl mx-auto lg:mx-0"
                   animate={{ 
                     boxShadow: child.biometrics.stressLevel > 5 
                       ? ['0 0 0 rgba(239, 68, 68, 0)', '0 0 20px rgba(239, 68, 68, 0.5)', '0 0 0 rgba(239, 68, 68, 0)']
@@ -251,34 +251,34 @@ export default function FigmaEmergencyCenter() {
                 >
                   {child.avatar}
                 </motion.div>
-                <div className="flex-1">
-                  <h3 className="font-semibold text-gray-900 dark:text-white">{child.name}</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
-                    <div className="flex items-center space-x-2">
-                      <Mic className="h-4 w-4 text-gray-500" />
-                      <span className="text-sm text-gray-600">Voice monitoring:</span>
-                      <span className={`text-sm font-medium ${getStatusColor(child.monitoring.voiceMonitoring)}`}>
+                <div className="flex-1 text-center lg:text-left">
+                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">{child.name}</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="flex items-center justify-center lg:justify-start space-x-3">
+                      <Mic className="h-5 w-5 text-gray-500" />
+                      <span className="text-base text-gray-600">Voice monitoring:</span>
+                      <span className={`text-base font-medium ${getStatusColor(child.monitoring.voiceMonitoring)}`}>
                         {child.monitoring.voiceMonitoring}
                       </span>
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <Shield className="h-4 w-4 text-gray-500" />
-                      <span className="text-sm text-gray-600">AI threat detection:</span>
-                      <span className={`text-sm font-medium ${getStatusColor(child.monitoring.threatDetection)}`}>
+                    <div className="flex items-center justify-center lg:justify-start space-x-3">
+                      <Shield className="h-5 w-5 text-gray-500" />
+                      <span className="text-base text-gray-600">AI threat detection:</span>
+                      <span className={`text-base font-medium ${getStatusColor(child.monitoring.threatDetection)}`}>
                         {child.monitoring.threatDetection}
                       </span>
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <Heart className="h-4 w-4 text-gray-500" />
-                      <span className="text-sm text-gray-600">Biometric alerts:</span>
-                      <span className={`text-sm font-medium ${getStatusColor(child.monitoring.biometricAlerts)}`}>
+                    <div className="flex items-center justify-center lg:justify-start space-x-3">
+                      <Heart className="h-5 w-5 text-gray-500" />
+                      <span className="text-base text-gray-600">Biometric alerts:</span>
+                      <span className={`text-base font-medium ${getStatusColor(child.monitoring.biometricAlerts)}`}>
                         {child.monitoring.biometricAlerts}
                       </span>
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <Navigation className="h-4 w-4 text-gray-500" />
-                      <span className="text-sm text-gray-600">Location tracking:</span>
-                      <span className={`text-sm font-medium ${getStatusColor(child.monitoring.locationTracking)}`}>
+                    <div className="flex items-center justify-center lg:justify-start space-x-3">
+                      <Navigation className="h-5 w-5 text-gray-500" />
+                      <span className="text-base text-gray-600">Location tracking:</span>
+                      <span className={`text-base font-medium ${getStatusColor(child.monitoring.locationTracking)}`}>
                         {child.monitoring.locationTracking}
                       </span>
                     </div>
@@ -306,36 +306,36 @@ export default function FigmaEmergencyCenter() {
         </TabsContent>
 
         {/* Placeholder tabs */}
-        <TabsContent value="what-can-i-put-here-1" className="text-center py-8">
-          <p className="text-gray-500">Location Tracking & Geofencing features coming soon...</p>
+        <TabsContent value="what-can-i-put-here-1" className="text-center py-12">
+          <p className="text-gray-500 text-base">Location Tracking & Geofencing features coming soon...</p>
         </TabsContent>
-        <TabsContent value="what-can-i-put-here-2" className="text-center py-8">
-          <p className="text-gray-500">Communication Safety features coming soon...</p>
+        <TabsContent value="what-can-i-put-here-2" className="text-center py-12">
+          <p className="text-gray-500 text-base">Communication Safety features coming soon...</p>
         </TabsContent>
-        <TabsContent value="what-can-i-put-here-3" className="text-center py-8">
-          <p className="text-gray-500">Screen Time Control features coming soon...</p>
+        <TabsContent value="what-can-i-put-here-3" className="text-center py-12">
+          <p className="text-gray-500 text-base">Screen Time Control features coming soon...</p>
         </TabsContent>
       </Tabs>
 
       {/* Emergency Lock Button */}
-      <div className="mt-6">
+      <div className="mt-8">
         <Button 
-          className="w-full bg-red-500 hover:bg-red-600 text-white py-4 text-lg font-semibold"
+          className="w-full bg-red-500 hover:bg-red-600 text-white py-6 text-xl font-semibold"
           size="lg"
         >
-          <Lock className="h-5 w-5 mr-2" />
+          <Lock className="h-6 w-6 mr-3" />
           Emergency Lock All Devices
         </Button>
       </div>
 
       {/* Test Buttons */}
-      <div className="flex space-x-4 mt-4">
-        <Button variant="outline" className="flex-1 text-orange-600 border-orange-200 hover:bg-orange-50">
-          <Heart className="h-4 w-4 mr-2" />
+      <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 mt-6">
+        <Button variant="outline" className="flex-1 text-orange-600 border-orange-200 hover:bg-orange-50 py-4 text-base">
+          <Heart className="h-5 w-5 mr-2" />
           Test Heart Rate Alert
         </Button>
-        <Button variant="outline" className="flex-1 text-purple-600 border-purple-200 hover:bg-purple-50">
-          <Mic className="h-4 w-4 mr-2" />
+        <Button variant="outline" className="flex-1 text-purple-600 border-purple-200 hover:bg-purple-50 py-4 text-base">
+          <Mic className="h-5 w-5 mr-2" />
           Test Voice Detection
         </Button>
       </div>
