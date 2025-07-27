@@ -13,7 +13,10 @@ import {
   Smile,
   Frown,
   Meh,
-  AlertTriangle
+  AlertTriangle,
+  Smartphone,
+  Laptop,
+  Shield
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 

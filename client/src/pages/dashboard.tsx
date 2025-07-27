@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Lock, Shield, BarChart3, Settings as SettingsIcon, Plus } from "lucide-react";
 import MobileHeader from "@/components/mobile-header";
-import EmergencySection from "@/components/emergency-section";
+import EmergencySection from "@/components/emergency-section-clean";
 import FamilyMemberCard from "@/components/family-member-card";
 import SecurityControls from "@/components/security-controls";
 import AIChatModal from "@/components/ai-chat-modal";
