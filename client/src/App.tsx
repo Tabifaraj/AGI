@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { useWebSocket } from "@/hooks/use-websocket";
 import Dashboard from "@/pages/dashboard";
 import GuardianWelcome from "@/pages/guardian-welcome";
+import GuardianSignIn from "@/pages/guardian-signin";
 import Family from "@/pages/family";
 import Activity from "@/pages/activity";
 import Settings from "@/pages/settings";
@@ -22,6 +23,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={GuardianWelcome} />
+      <Route path="/signin" component={GuardianSignIn} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/family" component={Family} />
       <Route path="/activity" component={Activity} />

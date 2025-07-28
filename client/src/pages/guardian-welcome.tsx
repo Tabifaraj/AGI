@@ -1,24 +1,23 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
+import { useLocation } from "wouter";
 import startupImage from "@assets/image_1753717742776.png";
 
 export default function GuardianWelcome() {
+  const [, setLocation] = useLocation();
   const [selectedLanguage, setSelectedLanguage] = useState("English");
 
   const handleSignIn = () => {
-    // Navigate to sign in
-    console.log("Sign In clicked");
+    setLocation("/signin");
   };
 
   const handleRegister = () => {
-    // Navigate to register
-    console.log("Register clicked");
+    setLocation("/register");
   };
 
   const handleSkip = () => {
-    // Skip to main app
-    console.log("Skip clicked");
+    setLocation("/dashboard");
   };
 
   return (
