@@ -67,8 +67,8 @@ export default function GuardianSmsVerify() {
   const handleNext = () => {
     const code = verificationCode.join("");
     if (code.length === 6) {
-      // Verify code and navigate to next step
-      setLocation("/dashboard");
+      // Verify code and navigate to ID verification step
+      setLocation("/id-verify");
     }
   };
 
