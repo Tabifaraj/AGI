@@ -1,43 +1,78 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ArrowLeft, ChevronDown } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useLocation } from "wouter";
 
-export default function GuardianPhoneVerify() {
+export default function GuardianSmsVerify() {
   const [, setLocation] = useLocation();
-  const [countryCode, setCountryCode] = useState("+44");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [verificationCode, setVerificationCode] = useState(["", "", "", "", "", ""]);
+  const [timeLeft, setTimeLeft] = useState(119); // 1:59 in seconds
+  const [canResend, setCanResend] = useState(false);
+
+  // Timer countdown
+  useEffect(() => {
+    if (timeLeft > 0) {
+      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+      return () => clearTimeout(timer);
+    } else {
+      setCanResend(true);
+    }
+  }, [timeLeft]);
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
 
   const handleBack = () => {
-    setLocation("/register");
+    setLocation("/phone-verify");
+  };
+
+  const handleCodeInput = (digit: string, index: number) => {
+    const newCode = [...verificationCode];
+    newCode[index] = digit;
+    setVerificationCode(newCode);
+
+    // Auto-focus next input
+    if (digit && index < 5) {
+      const nextInput = document.getElementById(`code-input-${index + 1}`);
+      nextInput?.focus();
+    }
+  };
+
+  const handleKeypadInput = (digit: string) => {
+    const emptyIndex = verificationCode.findIndex(code => code === "");
+    if (emptyIndex !== -1) {
+      handleCodeInput(digit, emptyIndex);
+    }
+  };
+
+  const handleBackspace = () => {
+    const lastFilledIndex = verificationCode.map((code, index) => code ? index : -1).filter(i => i !== -1).pop();
+    if (lastFilledIndex !== undefined) {
+      const newCode = [...verificationCode];
+      newCode[lastFilledIndex] = "";
+      setVerificationCode(newCode);
+    }
+  };
+
+  const handleResend = () => {
+    setTimeLeft(119);
+    setCanResend(false);
+    setVerificationCode(["", "", "", "", "", ""]);
+    // In real app, would trigger SMS resend
   };
 
   const handleNext = () => {
-    if (phoneNumber.trim()) {
-      // Navigate to SMS verification step
-      setLocation("/sms-verify");
+    const code = verificationCode.join("");
+    if (code.length === 6) {
+      // Verify code and navigate to next step
+      setLocation("/dashboard");
     }
   };
 
-  const formatPhoneNumber = (value: string) => {
-    // Remove all non-digits
-    const digits = value.replace(/\D/g, '');
-    
-    // Format as 000-000-0000
-    if (digits.length <= 3) {
-      return digits;
-    } else if (digits.length <= 6) {
-      return `${digits.slice(0, 3)}-${digits.slice(3)}`;
-    } else {
-      return `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
-    }
-  };
-
-  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formatted = formatPhoneNumber(e.target.value);
-    setPhoneNumber(formatted);
-  };
+  const isCodeComplete = verificationCode.every(digit => digit !== "");
 
   return (
     <div className="relative min-h-screen bg-gray-50 overflow-hidden">
@@ -72,55 +107,64 @@ export default function GuardianPhoneVerify() {
         {/* Main heading */}
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-black leading-tight mb-4">
-            Begin now!
+            Input verification code
           </h1>
           <p className="text-gray-600 text-lg leading-relaxed">
-            Please provide your mobile number to verify your account.
+            Please input the code from the SMS.
           </p>
         </div>
 
-        {/* Phone number input */}
-        <div className="mb-12">
-          <div className="flex items-center bg-white rounded-2xl border border-gray-200 p-4">
-            {/* Country selector */}
-            <div className="flex items-center space-x-2 mr-3 border-r border-gray-200 pr-3">
-              <div className="w-6 h-4 bg-red-500 rounded-sm relative overflow-hidden">
-                {/* UK Flag */}
-                <div className="absolute inset-0 bg-blue-700"></div>
-                <div className="absolute inset-0 bg-white transform rotate-45 origin-center scale-110"></div>
-                <div className="absolute inset-0 bg-red-600 transform -rotate-45 origin-center scale-75"></div>
-                <div className="absolute inset-0 bg-red-600 transform rotate-45 origin-center scale-75"></div>
-              </div>
-              <ChevronDown className="w-4 h-4 text-gray-600" />
+        {/* Code input boxes */}
+        <div className="flex justify-between mb-8">
+          {verificationCode.map((digit, index) => (
+            <div key={index} className="relative">
+              <input
+                id={`code-input-${index}`}
+                type="text"
+                maxLength={1}
+                value={digit}
+                onChange={(e) => handleCodeInput(e.target.value, index)}
+                className="w-12 h-16 text-center text-2xl font-medium bg-transparent border-b-2 border-gray-300 focus:border-black focus:outline-none"
+                style={{ caretColor: 'transparent' }}
+              />
+              {digit && (
+                <div className="absolute inset-x-0 bottom-0 h-0.5 bg-black"></div>
+              )}
             </div>
-            
-            {/* Phone input */}
-            <input
-              type="tel"
-              value={`${countryCode} ${phoneNumber}`}
-              onChange={(e) => {
-                const value = e.target.value.replace(`${countryCode} `, '');
-                handlePhoneChange({ target: { value } } as React.ChangeEvent<HTMLInputElement>);
-              }}
-              placeholder={`${countryCode} 000-000-0000`}
-              className="flex-1 text-lg text-black placeholder-gray-400 bg-transparent outline-none"
-            />
-          </div>
+          ))}
         </div>
 
-        {/* Privacy notice */}
-        <div className="mb-8">
-          <p className="text-sm text-gray-600 leading-relaxed">
-            By clicking "Next," you accept the Privacy policy and Terms of service
-          </p>
+        {/* Resend and timer */}
+        <div className="flex justify-between items-center mb-16">
+          <button
+            onClick={canResend ? handleResend : undefined}
+            className={`text-base ${canResend ? 'text-black hover:underline' : 'text-gray-400'}`}
+            disabled={!canResend}
+          >
+            Resend code for reload
+          </button>
+          <span className="text-black font-medium text-base">
+            {formatTime(timeLeft)}
+          </span>
+        </div>
+
+        {/* Don't receive OTP section */}
+        <div className="flex justify-between items-center mb-8">
+          <span className="text-gray-600 text-base">Don't receive an OTP?</span>
+          <button
+            onClick={handleResend}
+            className="text-black font-medium text-base hover:underline"
+          >
+            Resend now
+          </button>
         </div>
 
         {/* Next button */}
         <Button
           onClick={handleNext}
-          disabled={!phoneNumber.trim()}
+          disabled={!isCodeComplete}
           className={`w-full h-14 rounded-2xl font-medium text-lg transition-all mb-8 ${
-            phoneNumber.trim() 
+            isCodeComplete 
               ? 'bg-black text-white hover:bg-gray-800' 
               : 'bg-gray-300 text-gray-500 cursor-not-allowed'
           }`}
@@ -132,20 +176,20 @@ export default function GuardianPhoneVerify() {
         <div className="grid grid-cols-3 gap-4">
           {/* Row 1 */}
           <button 
-            onClick={() => setPhoneNumber(prev => formatPhoneNumber(prev.replace(/\D/g, '') + '1'))}
+            onClick={() => handleKeypadInput('1')}
             className="h-16 bg-white rounded-2xl flex flex-col items-center justify-center text-black font-medium text-xl border border-gray-200 hover:bg-gray-50"
           >
             <span>1</span>
           </button>
           <button 
-            onClick={() => setPhoneNumber(prev => formatPhoneNumber(prev.replace(/\D/g, '') + '2'))}
+            onClick={() => handleKeypadInput('2')}
             className="h-16 bg-white rounded-2xl flex flex-col items-center justify-center text-black font-medium text-xl border border-gray-200 hover:bg-gray-50"
           >
             <span>2</span>
             <span className="text-xs text-gray-500">ABC</span>
           </button>
           <button 
-            onClick={() => setPhoneNumber(prev => formatPhoneNumber(prev.replace(/\D/g, '') + '3'))}
+            onClick={() => handleKeypadInput('3')}
             className="h-16 bg-white rounded-2xl flex flex-col items-center justify-center text-black font-medium text-xl border border-gray-200 hover:bg-gray-50"
           >
             <span>3</span>
@@ -154,21 +198,21 @@ export default function GuardianPhoneVerify() {
 
           {/* Row 2 */}
           <button 
-            onClick={() => setPhoneNumber(prev => formatPhoneNumber(prev.replace(/\D/g, '') + '4'))}
+            onClick={() => handleKeypadInput('4')}
             className="h-16 bg-white rounded-2xl flex flex-col items-center justify-center text-black font-medium text-xl border border-gray-200 hover:bg-gray-50"
           >
             <span>4</span>
             <span className="text-xs text-gray-500">GHI</span>
           </button>
           <button 
-            onClick={() => setPhoneNumber(prev => formatPhoneNumber(prev.replace(/\D/g, '') + '5'))}
+            onClick={() => handleKeypadInput('5')}
             className="h-16 bg-white rounded-2xl flex flex-col items-center justify-center text-black font-medium text-xl border border-gray-200 hover:bg-gray-50"
           >
             <span>5</span>
             <span className="text-xs text-gray-500">JKL</span>
           </button>
           <button 
-            onClick={() => setPhoneNumber(prev => formatPhoneNumber(prev.replace(/\D/g, '') + '6'))}
+            onClick={() => handleKeypadInput('6')}
             className="h-16 bg-white rounded-2xl flex flex-col items-center justify-center text-black font-medium text-xl border border-gray-200 hover:bg-gray-50"
           >
             <span>6</span>
@@ -177,21 +221,21 @@ export default function GuardianPhoneVerify() {
 
           {/* Row 3 */}
           <button 
-            onClick={() => setPhoneNumber(prev => formatPhoneNumber(prev.replace(/\D/g, '') + '7'))}
+            onClick={() => handleKeypadInput('7')}
             className="h-16 bg-white rounded-2xl flex flex-col items-center justify-center text-black font-medium text-xl border border-gray-200 hover:bg-gray-50"
           >
             <span>7</span>
             <span className="text-xs text-gray-500">PQRS</span>
           </button>
           <button 
-            onClick={() => setPhoneNumber(prev => formatPhoneNumber(prev.replace(/\D/g, '') + '8'))}
+            onClick={() => handleKeypadInput('8')}
             className="h-16 bg-white rounded-2xl flex flex-col items-center justify-center text-black font-medium text-xl border border-gray-200 hover:bg-gray-50"
           >
             <span>8</span>
             <span className="text-xs text-gray-500">TUV</span>
           </button>
           <button 
-            onClick={() => setPhoneNumber(prev => formatPhoneNumber(prev.replace(/\D/g, '') + '9'))}
+            onClick={() => handleKeypadInput('9')}
             className="h-16 bg-white rounded-2xl flex flex-col items-center justify-center text-black font-medium text-xl border border-gray-200 hover:bg-gray-50"
           >
             <span>9</span>
@@ -201,16 +245,13 @@ export default function GuardianPhoneVerify() {
           {/* Row 4 */}
           <div></div>
           <button 
-            onClick={() => setPhoneNumber(prev => formatPhoneNumber(prev.replace(/\D/g, '') + '0'))}
+            onClick={() => handleKeypadInput('0')}
             className="h-16 bg-white rounded-2xl flex items-center justify-center text-black font-medium text-xl border border-gray-200 hover:bg-gray-50"
           >
             0
           </button>
           <button 
-            onClick={() => setPhoneNumber(prev => {
-              const digits = prev.replace(/\D/g, '');
-              return formatPhoneNumber(digits.slice(0, -1));
-            })}
+            onClick={handleBackspace}
             className="h-16 bg-white rounded-2xl flex items-center justify-center text-black border border-gray-200 hover:bg-gray-50"
           >
             <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none">
