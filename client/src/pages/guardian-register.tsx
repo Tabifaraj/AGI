@@ -10,8 +10,8 @@ export default function GuardianRegister() {
 
   const handleNext = () => {
     if (acceptedTerms) {
-      // Navigate to next step or dashboard
-      setLocation("/dashboard");
+      // Navigate to phone verification step
+      setLocation("/phone-verify");
     }
   };
 

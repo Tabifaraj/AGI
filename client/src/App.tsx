@@ -8,6 +8,7 @@ import Dashboard from "@/pages/dashboard";
 import GuardianWelcome from "@/pages/guardian-welcome";
 import GuardianSignIn from "@/pages/guardian-signin";
 import GuardianRegister from "@/pages/guardian-register";
+import GuardianPhoneVerify from "@/pages/guardian-phone-verify";
 import Family from "@/pages/family";
 import Activity from "@/pages/activity";
 import Settings from "@/pages/settings";
@@ -26,6 +27,7 @@ function Router() {
       <Route path="/" component={GuardianWelcome} />
       <Route path="/signin" component={GuardianSignIn} />
       <Route path="/register" component={GuardianRegister} />
+      <Route path="/phone-verify" component={GuardianPhoneVerify} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/family" component={Family} />
       <Route path="/activity" component={Activity} />
