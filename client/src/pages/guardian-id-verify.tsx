@@ -11,9 +11,8 @@ export default function GuardianIdVerify() {
   };
 
   const handleBeginShooting = () => {
-    // In a real app, this would open the camera
-    // For now, navigate to dashboard
-    setLocation("/dashboard");
+    // Navigate to camera screen
+    setLocation("/id-camera");
   };
 
   return (
