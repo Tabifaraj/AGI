@@ -114,8 +114,9 @@ Changelog:
   - Created SMS verification screen with 6-digit code input and timer (image_1753897004441.png)
   - Added ID verification screen with photo guidelines and "Begin shooting" button (image_1753897819549.png)
   - Created ID camera screen with frame overlay, validation, and front/back capture (image_1753899227663.png)
-  - Implemented complete guardian authentication flow: Welcome → Sign In → Register → Phone Verify → SMS Verify → ID Verify → ID Camera → Dashboard
-  - All screens follow exact Figma specifications with camera functionality, validation messages, and proper frame guidance
+  - Added ID confirmation screen with extracted info, sex selector, and manual editing (image_1753900523085.png)
+  - Implemented complete guardian authentication flow: Welcome → Sign In → Register → Phone Verify → SMS Verify → ID Verify → ID Camera → ID Confirm → Dashboard
+  - All screens follow exact Figma specifications with OCR simulation, editable fields, and validation options
 - July 27, 2025. Implemented AI Child Avatar with Emotional Intelligence and Guardian Rebrand
   - Renamed "Parent" to "Guardian" throughout the entire application
   - Created revolutionary AI Child Avatar component (Group 237459) with emotional intelligence

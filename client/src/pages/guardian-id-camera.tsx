@@ -41,8 +41,8 @@ export default function GuardianIdCamera() {
       setCapturedImage(null);
       setIsValid(false);
     } else if (currentSide === 'back' && isValid) {
-      // Both sides captured, proceed to dashboard
-      setLocation("/dashboard");
+      // Both sides captured, proceed to ID confirmation
+      setLocation("/id-confirm");
     }
   };
 

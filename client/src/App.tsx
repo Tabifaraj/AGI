@@ -12,6 +12,7 @@ import GuardianPhoneVerify from "@/pages/guardian-phone-verify";
 import GuardianSmsVerify from "@/pages/guardian-sms-verify";
 import GuardianIdVerify from "@/pages/guardian-id-verify";
 import GuardianIdCamera from "@/pages/guardian-id-camera";
+import GuardianIdConfirm from "@/pages/guardian-id-confirm";
 import Family from "@/pages/family";
 import Activity from "@/pages/activity";
 import Settings from "@/pages/settings";
@@ -34,6 +35,7 @@ function Router() {
       <Route path="/sms-verify" component={GuardianSmsVerify} />
       <Route path="/id-verify" component={GuardianIdVerify} />
       <Route path="/id-camera" component={GuardianIdCamera} />
+      <Route path="/id-confirm" component={GuardianIdConfirm} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/family" component={Family} />
       <Route path="/activity" component={Activity} />
