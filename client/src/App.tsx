@@ -13,6 +13,12 @@ import GuardianSmsVerify from "@/pages/guardian-sms-verify";
 import GuardianIdVerify from "@/pages/guardian-id-verify";
 import GuardianIdCamera from "@/pages/guardian-id-camera";
 import GuardianIdConfirm from "@/pages/guardian-id-confirm";
+import GuardianFacialRecognition from "@/pages/guardian-facial-recognition";
+import GuardianFacialCamera from "@/pages/guardian-facial-camera";
+import GuardianFacialVerification from "@/pages/guardian-facial-verification";
+import GuardianType from "@/pages/guardian-type";
+import GuardianSetPassword from "@/pages/guardian-set-password";
+import GuardianCongratulations from "@/pages/guardian-congratulations";
 import Family from "@/pages/family";
 import Activity from "@/pages/activity";
 import Settings from "@/pages/settings";
@@ -36,6 +42,12 @@ function Router() {
       <Route path="/id-verify" component={GuardianIdVerify} />
       <Route path="/id-camera" component={GuardianIdCamera} />
       <Route path="/id-confirm" component={GuardianIdConfirm} />
+      <Route path="/facial-recognition" component={GuardianFacialRecognition} />
+      <Route path="/facial-camera" component={GuardianFacialCamera} />
+      <Route path="/facial-verification" component={GuardianFacialVerification} />
+      <Route path="/guardian-type" component={GuardianType} />
+      <Route path="/set-password" component={GuardianSetPassword} />
+      <Route path="/congratulations" component={GuardianCongratulations} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/family" component={Family} />
       <Route path="/activity" component={Activity} />

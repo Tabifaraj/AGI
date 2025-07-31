@@ -25,8 +25,8 @@ export default function GuardianIdConfirm() {
   };
 
   const handleConfirm = () => {
-    // Save ID information and proceed to dashboard
-    setLocation("/dashboard");
+    // Save ID information and proceed to facial recognition
+    setLocation("/facial-recognition");
   };
 
   const handleInputChange = (field: string, value: string) => {
